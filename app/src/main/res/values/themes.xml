@@ -3,7 +3,13 @@
     <style name="Base.Theme.Beesness" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="windowSplashScreenBackground">#FFFFFF</item>
+
+        <item name="windowSplashScreenAnimatedIcon">@drawable/beesnesssplash</item>
+
+        <item name="windowSplashScreenAnimationDuration">1000</item> <item name="postSplashScreenTheme">@style/Theme.Beesness</item>
     </style>
 
     <style name="Theme.Beesness" parent="Base.Theme.Beesness" />
+
 </resources>
