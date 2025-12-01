@@ -6,9 +6,9 @@ public class User {
     private String email;
     private String phonenum;
     private String companyName;
-    private Category category;
+    private String category;
 
-    public User(String id, String name, String email, String phonenum, String companyName, Category category) {
+    public User(String id, String name, String email, String phonenum, String companyName, String category) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -57,11 +57,11 @@ public class User {
         this.companyName = companyName;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 }
