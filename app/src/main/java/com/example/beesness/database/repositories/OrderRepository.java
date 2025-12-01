@@ -1,4 +1,4 @@
-package com.example.beesness.database.repository;
+package com.example.beesness.database.repositories;
 
 import com.example.beesness.database.interfaces.FirestoreCallback;
 import com.example.beesness.database.interfaces.IOrderRepository;

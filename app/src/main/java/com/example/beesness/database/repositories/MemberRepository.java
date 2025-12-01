@@ -1,12 +1,10 @@
-package com.example.beesness.database.repository;
+package com.example.beesness.database.repositories;
 
 import com.example.beesness.database.interfaces.FirestoreCallback;
 import com.example.beesness.database.interfaces.IMemberRepository;
 import com.example.beesness.models.Member;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.model.DocumentSet;
 
 import java.util.List;
 

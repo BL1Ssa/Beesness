@@ -1,7 +1,6 @@
 package com.example.beesness.views;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,12 +10,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.beesness.R;
-import com.example.beesness.database.interfaces.FirestoreCallback;
-import com.example.beesness.database.interfaces.IProductRepository;
-import com.example.beesness.database.repository.ProductRepository;
-import com.example.beesness.models.Product;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 

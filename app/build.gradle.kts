@@ -46,5 +46,6 @@ dependencies {
 
     // 2. Add the products you need WITHOUT version numbers
     // The BOM will pick the correct compatible versions for you.
+    implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore")
 }
