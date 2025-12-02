@@ -1,4 +1,4 @@
-package com.example.beesness.database.interfaces;
+package com.example.beesness.utils;
 
 public interface FirestoreCallback<T> {
     void onSuccess(T result);

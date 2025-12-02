@@ -1,6 +1,6 @@
 package com.example.beesness.database.repositories;
 
-import com.example.beesness.database.interfaces.FirestoreCallback;
+import com.example.beesness.utils.FirestoreCallback;
 import com.example.beesness.database.interfaces.IReceiptRepository;
 import com.example.beesness.models.Receipt;
 import com.google.firebase.firestore.CollectionReference;
@@ -24,7 +24,7 @@ public class ReceiptRepository implements IReceiptRepository {
     }
 
     @Override
-    public void add(Receipt receipt, FirestoreCallback<Receipt> callback) {
+    public void add(Receipt receipt, FirestoreCallback <Receipt> callback) {
         ref.add(receipt).addOnSuccessListener(documentReference -> {
             receipt.setId(ref.getId());
             callback.onSuccess(receipt);

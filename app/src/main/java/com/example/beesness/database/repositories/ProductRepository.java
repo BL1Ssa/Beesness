@@ -1,6 +1,6 @@
 package com.example.beesness.database.repositories;
 
-import com.example.beesness.database.interfaces.FirestoreCallback;
+import com.example.beesness.utils.FirestoreCallback;
 import com.example.beesness.database.interfaces.IProductRepository;
 import com.example.beesness.models.Product;
 import com.google.firebase.firestore.CollectionReference;

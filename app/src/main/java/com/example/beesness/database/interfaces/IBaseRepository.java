@@ -1,5 +1,7 @@
 package com.example.beesness.database.interfaces;
 
+import com.example.beesness.utils.FirestoreCallback;
+
 import java.util.List;
 
 public interface IBaseRepository<T> {
