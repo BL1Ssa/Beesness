@@ -1,53 +1,47 @@
 package com.example.beesness.models;
 
-import com.google.type.DateTime;
-
-import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class Receipt {
-    private String id;
-    private DateTime time;
-    private String userId;
+
+    // 1. Header (Store Info)
+    private String storeName;
+    private String storeAddress;
+
+    // 2. Transaction Info
     private String orderId;
+    private Date date;
+    private String cashierName;
 
-    public Receipt(){}
+    // 3. Line Items
+    private List<Product> items;
 
-    public Receipt(String id, DateTime time, String userId, String orderId) {
-        this.id = id;
-        this.time = time;
-        this.userId = userId;
-        this.orderId = orderId;
+    // 4. Totals
+    private double grandTotal; // The "Total Price"
+
+    // Constructor: Maps the ERP data to the Receipt format
+    public Receipt(Store store, Order order, Staff cashier) {
+        this.storeName = store.getName();
+        this.storeAddress = store.getAddress();
+
+        this.orderId = order.getId();
+        this.date = order.getDate();
+        this.cashierName = (cashier != null) ? cashier.getRole() : "Staff"; // Ideally use cashier.getName() if available
+
+        this.items = order.getItems();
+
+        // --- THE FIX IS HERE ---
+        // Map 'totalRevenue' (ERP term) to 'grandTotal' (Receipt term)
+        this.grandTotal = order.getTotalRevenue();
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setTime(DateTime time) {
-        this.time = time;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public DateTime getTime() {
-        return time;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
+    // --- Getters ---
+    public String getStoreName() { return storeName; }
+    public String getStoreAddress() { return storeAddress; }
+    public String getOrderId() { return orderId; }
+    public Date getDate() { return date; }
+    public String getCashierName() { return cashierName; }
+    public List<Product> getItems() { return items; }
+    public double getGrandTotal() { return grandTotal; }
 }

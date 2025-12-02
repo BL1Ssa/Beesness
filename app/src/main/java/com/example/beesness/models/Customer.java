@@ -1,12 +1,12 @@
 package com.example.beesness.models;
 
-public class Member {
+public class Customer {
     private String id;
     private String name;
 
-    public Member(){}
+    public Customer(){}
 
-    public Member(String id, String name) {
+    public Customer(String id, String name) {
         this.id = id;
         this.name = name;
     }

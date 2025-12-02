@@ -5,16 +5,12 @@ public class User {
     private String name;
     private String email;
     private String phonenum;
-    private String companyName;
-    private String category;
 
-    public User(String id, String name, String email, String phonenum, String companyName, String category) {
+    public User(String id, String name, String email, String phonenum) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phonenum = phonenum;
-        this.companyName = companyName;
-        this.category = category;
     }
 
     public String getId(){
@@ -47,21 +43,5 @@ public class User {
 
     public void setPhonenum(String phonenum) {
         this.phonenum = phonenum;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 }

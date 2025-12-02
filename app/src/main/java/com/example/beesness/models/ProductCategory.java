@@ -1,14 +1,11 @@
 package com.example.beesness.models;
 
-public class Category {
+public class ProductCategory {
     private String id;
     private String name;
     private String code;
 
-    public Category() {
-    }
-
-    public Category(String id, String name, String code) {
+    public ProductCategory(String id, String name, String code) {
         this.id = id;
         this.name = name;
         this.code = code;
