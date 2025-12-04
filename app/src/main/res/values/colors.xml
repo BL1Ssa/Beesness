@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="honey_primary">#E4AB37</color>
+    <color name="honey_light">#F3C970</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray_text">#252525</color>
+    <color name="green_growth">#08C514</color>
+    <color name="red_growth_line">#F85127</color>
+    <color name="orange_sales_line">#DF8E30</color>
+    <color name="blue_link">#3366CC </color>
 </resources>

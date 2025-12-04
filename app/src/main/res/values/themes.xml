@@ -11,5 +11,7 @@
     </style>
 
     <style name="Theme.Beesness" parent="Base.Theme.Beesness" />
-
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/honey_light</item>
+    </style>
 </resources>

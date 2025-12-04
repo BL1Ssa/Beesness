@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvSignIn"
             android:textSize="20sp"
-            android:text="Sign in to continue"
+            android:text="Create Account"
             android:layout_below="@+id/loginLogo"
             android:textAlignment="center"
             android:layout_marginTop="12dp"
@@ -57,61 +57,103 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/labelLoginEmail"
-                android:text="Email"
-                android:labelFor="@+id/etLoginEmail"/>
+                android:id="@+id/labelSignUpName"
+                android:text="Name"
+                android:labelFor="@+id/etSignUpName"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/etLoginEmail"
-                android:hint="your-email@example.com"
+                android:id="@+id/etSignUpName"
+                android:hint="@string/exampleName"
                 android:layout_marginBottom="12dp"
                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/labelLoginPassword"
-                android:text="Password"
-                android:labelFor="@+id/etLoginPassword"/>
+                android:id="@+id/labelSignUpEmail"
+                android:text="Email"
+                android:labelFor="@+id/etSignUpEmail"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/etLoginPassword"
-                android:hint="password"
-                android:inputType="textPassword"
+                android:id="@+id/etSignUpEmail"
+                android:hint="@string/exampleEmail"
+                android:layout_marginBottom="12dp"
                 />
 
-            <CheckBox
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Remember me"
-                android:id="@+id/rememberCb"/>
+                android:id="@+id/labelSignUpPhonenum"
+                android:text="@string/labelPhonenum"
+                android:labelFor="@+id/etSignUpPhonenum"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etSignUpPhonenum"
+                android:hint="@string/examplePhonenum"
+                android:inputType="phone"
+                android:layout_marginBottom="12dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelSignUpPassword"
+                android:text="@string/labelPassword"
+                android:labelFor="@+id/etSignUpPassword"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etSignUpPassword"
+                android:hint="@string/placeholderPassword"
+                android:inputType="textPassword"
+                android:layout_marginBottom="12dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelSignUpConfirmPassword"
+                android:text="@string/labelConfirmPassword"
+                android:labelFor="@+id/etSignUpConfirmPassword"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etSignUpConfirmPassword"
+                android:hint="@string/placeholderPassword"
+                android:inputType="textPassword"
+                android:layout_marginBottom="12dp"
+                />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnSignIn"
-                android:text="Sign In"
+                android:id="@+id/btnSignUp"
+                android:text="@string/signUpBtnPlaceholder"
                 android:layout_marginBottom="12dp"
                 android:backgroundTint="@color/honey_primary"/>
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Don't have an account? "
-                    android:id="@+id/noAccount"
+                    android:text="Already have an account? "
+                    android:id="@+id/yesAccount"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sign up here"
+                    android:text="Login here"
                     android:textColor="@color/blue_link"
-                    android:layout_toRightOf="@id/noAccount"/>
+                    android:layout_toEndOf="@id/yesAccount"/>
             </RelativeLayout>
         </LinearLayout>
 
