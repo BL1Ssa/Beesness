@@ -87,8 +87,17 @@ public class StoreRepository implements IStoreRepository {
                 }).addOnFailureListener(callback::onFailure);
     }
 
+    public void getByOwnerId(String ownerId, FirestoreCallback<List<Store>> callback){
+        storeRef.whereEqualTo("ownerId", ownerId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Store> storeList = queryDocumentSnapshots.toObjects(Store.class);
+                    callback.onSuccess(storeList);
+                }).addOnFailureListener(callback::onFailure);
+    }
+
     @Override
     public void update(String id, Store store, FirestoreCallback<Void> callback) {
+        store.setId(id);
         storeRef.document(id).set(store)
                 .addOnSuccessListener(aVoid -> {
                     callback.onSuccess(null);
