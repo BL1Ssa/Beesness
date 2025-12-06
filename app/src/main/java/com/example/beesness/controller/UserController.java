@@ -112,9 +112,12 @@ public class UserController {
             public void onSuccess(Void result) {
                 callback.onResult(Result.success(result, "User deleted successfully"));
             }
+
             @Override
             public void onFailure(Exception e) {
                 callback.onResult(Result.error(e.getMessage()));
-        }
+            }
+        });
     }
 }
+
