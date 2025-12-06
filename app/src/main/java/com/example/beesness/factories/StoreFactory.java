@@ -18,6 +18,6 @@ public class StoreFactory {
     public static Store create(String id, String name, String address, String phone, String ownerId, String currency, StoreCategory category) {
 
 
-        return new Store(null, name, address, phone, ownerId, currency, category.getId());
+        return new Store(id, name, address, phone, ownerId, currency, category.getId());
     }
 }

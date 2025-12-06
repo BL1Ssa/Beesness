@@ -4,6 +4,7 @@ import com.example.beesness.utils.FirestoreCallback;
 import com.example.beesness.database.interfaces.ICustomerRepository;
 import com.example.beesness.models.Customer;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -25,10 +26,13 @@ public class CustomerRepository implements ICustomerRepository {
     }
     @Override
     public void add(Customer customer, FirestoreCallback<Customer> callback) {
-        ref.add(customer).addOnSuccessListener(documentReference -> {
-            customer.setId(ref.getId());
-            callback.onSuccess(customer);
-        }).addOnFailureListener(callback::onFailure);
+        DocumentReference newDocRef = ref.document();
+        customer.setId(newDocRef.getId());
+
+        newDocRef.set(customer)
+                .addOnSuccessListener(aVoid -> {
+                    callback.onSuccess(customer);
+                }).addOnFailureListener(callback::onFailure);
     }
 
     @Override

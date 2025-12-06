@@ -18,9 +18,7 @@ public class StaffFactory {
         return new Staff(null, user.getId(), null, "OWNER", user.getEmail(), getToday());
     }
 
-    // GENERIC: For use of any kinds of staffs. However user do need to input the roles here which might be sad lmao
     public static Staff create(String userId, String userEmail, String storeId, String role) {
-        // We might want to uppercase the role for consistency
         String cleanRole = role.toUpperCase().trim();
 
         return new Staff(null, userId, storeId, cleanRole, userEmail, getToday());
@@ -28,7 +26,6 @@ public class StaffFactory {
 
     //for updating
     public static Staff create(String id, String userId, String userEmail, String storeId, String role) {
-        // We might want to uppercase the role for consistency
         String cleanRole = role.toUpperCase().trim();
 
         return new Staff(id, userId, storeId, cleanRole, userEmail, getToday());
