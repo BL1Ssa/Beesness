@@ -10,7 +10,7 @@ import com.example.beesness.utils.Result;
 import java.util.List;
 
 public class StaffController {
-    private StaffRepository repository;
+    private final StaffRepository repository;
 
     public StaffController(){
         repository = StaffRepository.getInstance();

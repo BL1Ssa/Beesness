@@ -11,7 +11,7 @@ import com.example.beesness.utils.Result;
 import java.util.List;
 
 public class ProductCategoryController {
-    private ProductCategoryRepository repository;
+    private final ProductCategoryRepository repository;
 
     public ProductCategoryController(){
         repository = ProductCategoryRepository.getInstance();
