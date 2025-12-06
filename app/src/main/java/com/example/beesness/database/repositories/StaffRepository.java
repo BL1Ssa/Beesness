@@ -26,6 +26,19 @@ public class StaffRepository implements IStaffRepository {
         }
         return instance;
     }
+
+    @Override
+    public void add(Staff staff, FirestoreCallback<Staff> callback) {
+        DocumentReference newDocRef = ref.document();
+        staff.setId(newDocRef.getId());
+
+        newDocRef.set(staff)
+                .addOnSuccessListener(aVoid -> {
+                    callback.onSuccess(staff);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
     @Override
     public void getByUserId(String userId, FirestoreCallback<List<Staff>> callback) {
         ref.whereEqualTo("userId", userId)
@@ -48,17 +61,6 @@ public class StaffRepository implements IStaffRepository {
                 }).addOnFailureListener(callback::onFailure);
     }
 
-    @Override
-    public void add(Staff staff, FirestoreCallback<Staff> callback) {
-        DocumentReference newDocRef = ref.document();
-        staff.setId(newDocRef.getId());
-
-        newDocRef.set(staff)
-                .addOnSuccessListener(aVoid -> {
-                    callback.onSuccess(staff);
-                })
-                .addOnFailureListener(callback::onFailure);
-    }
 
     @Override
     public void getAll(FirestoreCallback<List<Staff>> callback) {
