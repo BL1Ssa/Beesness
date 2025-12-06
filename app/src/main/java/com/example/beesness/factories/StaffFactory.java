@@ -25,4 +25,12 @@ public class StaffFactory {
 
         return new Staff(null, userId, storeId, cleanRole, userEmail, getToday());
     }
+
+    //for updating
+    public static Staff create(String id, String userId, String userEmail, String storeId, String role) {
+        // We might want to uppercase the role for consistency
+        String cleanRole = role.toUpperCase().trim();
+
+        return new Staff(id, userId, storeId, cleanRole, userEmail, getToday());
+    }
 }

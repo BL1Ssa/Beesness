@@ -4,6 +4,7 @@ import com.example.beesness.models.StoreCategory;
 import com.example.beesness.utils.FirestoreCallback;
 import com.example.beesness.database.interfaces.IStoreCategoryRepository;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -20,9 +21,11 @@ public class StoreCategoryRepository implements IStoreCategoryRepository {
 
     @Override
     public void add(StoreCategory storeCategory, FirestoreCallback<StoreCategory> callback) {
-        ref.add(storeCategory)
-                .addOnSuccessListener(documentReference -> {
-                    storeCategory.setId(ref.getId());
+        DocumentReference newDocRef = ref.document();
+        storeCategory.setId(newDocRef.getId());
+
+        newDocRef.set(storeCategory)
+                .addOnSuccessListener(aVoid -> {
                     callback.onSuccess(storeCategory);
                 }).addOnFailureListener(callback::onFailure);
     }

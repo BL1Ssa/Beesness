@@ -1,6 +1,7 @@
 package com.example.beesness.database.repositories;
 import com.example.beesness.database.interfaces.IProductRepository;
 import com.example.beesness.models.Product;
+import com.example.beesness.utils.CounterData;
 import com.example.beesness.utils.FirestoreCallback;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -106,8 +107,3 @@ public class ProductRepository implements IProductRepository {
     }
 }
 
-// Helper for the counter
-class CounterData {
-    public long count;
-    public CounterData(long count) { this.count = count; }
-}

@@ -61,10 +61,14 @@ public class StoreRepository implements IStoreRepository {
 
     @Override
     public void add(Store store, FirestoreCallback<Store> callback) {
-        storeRef.add(store).addOnSuccessListener(documentReference -> {
-            store.setId(documentReference.getId());
-            callback.onSuccess(store);
-        }).addOnFailureListener(callback::onFailure);
+        DocumentReference newDocRef = storeRef.document();
+        store.setId(newDocRef.getId());
+
+        newDocRef.set(store)
+                .addOnSuccessListener(aVoid -> {
+                    callback.onSuccess(store);
+                })
+                .addOnFailureListener(callback::onFailure);
     }
 
     @Override

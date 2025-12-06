@@ -105,7 +105,7 @@ public class StoreController {
             return;
         }
 
-        Store store = StoreFactory.create(name, address, phone, currentUser.getId(), currency, selectedCategory);
+        Store store = StoreFactory.create(storeId, name, address, phone, currentUser.getId(), currency, selectedCategory);
         repository.update(storeId, store, new FirestoreCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
