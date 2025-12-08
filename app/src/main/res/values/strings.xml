@@ -8,4 +8,6 @@
     <string name="placeholderPassword">password</string>
     <string name="labelConfirmPassword">Confirm Password</string>
     <string name="signUpBtnPlaceholder">Sign Up</string>
+    <string name="createAccountText">Create Account</string>
+    <string name="signInText">Sign in to continue</string>
 </resources>
