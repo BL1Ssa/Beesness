@@ -39,3 +39,8 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("androidx.core:core-splashscreen:1.0.1")
 }
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
