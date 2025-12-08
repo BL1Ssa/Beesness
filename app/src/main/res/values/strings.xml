@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">Beesness</string>
+    <string name="app_name" translatable="false">Beesness</string>
+    <string name="exampleName">John Doe</string>
+    <string name="exampleEmail">your-email@example.com</string>
+    <string name="examplePhonenum">088xxxxxxx</string>
+    <string name="labelPhonenum">Phone Number</string>
+    <string name="labelPassword">Password</string>
+    <string name="placeholderPassword">password</string>
+    <string name="labelConfirmPassword">Confirm Password</string>
+    <string name="signUpBtnPlaceholder">Sign Up</string>
+    <string name="createAccountText">Create Account</string>
+    <string name="signInText">Sign in to continue</string>
 </resources>
