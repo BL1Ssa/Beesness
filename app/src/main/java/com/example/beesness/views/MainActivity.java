@@ -1,5 +1,6 @@
 package com.example.beesness.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,9 +12,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.beesness.R;
-import com.example.beesness.utils.FirestoreCallback;
-import com.example.beesness.database.repositories.StaffRepository;
-import com.example.beesness.models.Staff;
+import com.example.beesness.controller.StoreController;
+import com.example.beesness.models.Store;
+import com.example.beesness.models.User;
+import com.example.beesness.utils.OperationCallback;
+import com.example.beesness.utils.Result;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -21,83 +24,86 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    // 1. UI Components
+    // UI Components
     private Spinner spinnerStore;
     private TextView tvTotalRevenue, tvTotalExpense;
     private BottomNavigationView bottomNav;
+    // Removed FloatingActionButton
 
-    // 2. Data & Logic
-    private StaffRepository staffRepo;
-
-    // TEMPORARY: Hardcoded User ID for development.
-    // Later, this will come from LoginActivity.
-    private final String CURRENT_USER_ID = "USER_123";
+    // Controllers & Data
+    private StoreController storeController;
+    private User currentUser;
+    private List<Store> userStores = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // Ensure this matches your XML filename
+        setContentView(R.layout.activity_main);
 
-        // A. Initialize Views
-        spinnerStore = findViewById(R.id.spinnerStoreSelector);
-        tvTotalRevenue = findViewById(R.id.tvTotalRevenue);
-        tvTotalExpense = findViewById(R.id.tvTotalExpense);
-        bottomNav = findViewById(R.id.bottom_navigation);
+        // 1. Get User from Intent
+        currentUser = (User) getIntent().getSerializableExtra("USER");
 
-        // B. Initialize Repository
-        staffRepo = StaffRepository.getInstance();
+        if (currentUser == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
 
-        // C. Start Logic
+        // 2. Initialize
+        storeController = new StoreController();
+        initViews();
+
+        // 3. Load Data
         loadUserStores();
         setupNavigation();
     }
 
-    // --- LOGIC: Load the Stores this user owns ---
+    private void initViews() {
+        spinnerStore = findViewById(R.id.spinnerStoreSelector);
+        tvTotalRevenue = findViewById(R.id.tvTotalRevenue);
+        tvTotalExpense = findViewById(R.id.tvTotalExpense);
+        bottomNav = findViewById(R.id.bottom_navigation);
+    }
+
+    // --- LOGIC: Load Stores owned by this User ---
     private void loadUserStores() {
-        staffRepo.getByUserId(CURRENT_USER_ID, new FirestoreCallback<List<Staff>>() {
+        storeController.getByOwnerId(currentUser, new OperationCallback<List<Store>>() {
             @Override
-            public void onSuccess(List<Staff> staffRecords) {
-                if (staffRecords.isEmpty()) {
-                    // Scenario: User has no store. Force them to create one.
-                    Toast.makeText(MainActivity.this, "Please create your first store!", Toast.LENGTH_LONG).show();
-//                    Intent intent = new Intent(MainActivity.this, CreateStoreActivity.class);
-//                    startActivity(intent);
-//                    finish(); // Close MainActivity so they can't go back
-                    return;
+            public void onResult(Result<List<Store>> result) {
+                switch (result.status) {
+                    case LOADING:
+                        break;
+                    case SUCCESS:
+                        userStores = result.data;
+                        if (userStores == null || userStores.isEmpty()) {
+                            Toast.makeText(MainActivity.this, "Welcome! Please create your first store.", Toast.LENGTH_LONG).show();
+                            // Redirect to CreateStoreActivity...
+                        } else {
+                            setupStoreSpinner();
+                        }
+                        break;
+                    case ERROR:
+                        Toast.makeText(MainActivity.this, "Error: " + result.message, Toast.LENGTH_LONG).show();
+                        break;
                 }
-
-                // Scenario: User has stores. Populate the Spinner.
-                setupStoreSpinner(staffRecords);
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(MainActivity.this, "Error loading stores: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // --- LOGIC: Populate Spinner & Handle Switching ---
-    private void setupStoreSpinner(List<Staff> staffList) {
-        // 1. Extract Store IDs (Ideally, fetch Names, but IDs are fine for MVP)
-        List<String> storeIds = new ArrayList<>();
-        for (Staff s : staffList) {
-            storeIds.add(s.getStoreId());
+    private void setupStoreSpinner() {
+        List<String> storeNames = new ArrayList<>();
+        for (Store s : userStores) {
+            storeNames.add(s.getName());
         }
 
-        // 2. Create Adapter for the Spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, storeIds);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, storeNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerStore.setAdapter(adapter);
 
-        // 3. Listen for Selection Changes
         spinnerStore.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedStoreId = storeIds.get(position);
-
-                // MOCK DATA: Update the Dashboard numbers based on selection
-                updateDashboardNumbers(selectedStoreId);
+                loadDashboardData(userStores.get(position));
             }
 
             @Override
@@ -105,35 +111,39 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // --- LOGIC: Update UI (Mock for now) ---
-    private void updateDashboardNumbers(String storeId) {
-        // Later, you will call OrderRepository here to get real math.
-        // For now, let's just show it works.
-        tvTotalRevenue.setText("Rp 15.000.000");
-        tvTotalExpense.setText("Rp 5.000.000");
-        Toast.makeText(this, "Switched to store: " + storeId, Toast.LENGTH_SHORT).show();
+    private void loadDashboardData(Store store) {
+        tvTotalRevenue.setText(store.getCurrency() + " 0");
+        tvTotalExpense.setText(store.getCurrency() + " 0");
     }
 
-    // --- LOGIC: Bottom Navigation ---
+    // --- UPDATED NAVIGATION ---
     private void setupNavigation() {
+        // Highlight "Home" by default
+        bottomNav.setSelectedItemId(R.id.nav_home);
+
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
-                Toast.makeText(this, "Home clicked", Toast.LENGTH_SHORT).show();
                 return true;
+
+            } else if (id == R.id.nav_transaction) {
+                // This replaces your old FAB logic
+                Toast.makeText(this, "Opening POS (Point of Sale)...", Toast.LENGTH_SHORT).show();
+                // Intent intent = new Intent(MainActivity.this, TransactionActivity.class);
+                // startActivity(intent);
+                return true;
+
+            } else if (id == R.id.nav_cart) {
+                Toast.makeText(this, "Opening Orders...", Toast.LENGTH_SHORT).show();
+                return true;
+
             } else if (id == R.id.nav_stock) {
-                // TODO: Link to ProductListActivity
-                Toast.makeText(this, "Stock Management clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Opening Stock...", Toast.LENGTH_SHORT).show();
                 return true;
+
             } else if (id == R.id.nav_profile) {
-                Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show();
-                return true;
-            }else if(id == R.id.nav_cart) {
-                Toast.makeText(this, "Cart clicked", Toast.LENGTH_SHORT).show();
-                return true;
-            }else if(id == R.id.nav_transaction){
-                Toast.makeText(this, "Transaction clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Opening Profile...", Toast.LENGTH_SHORT).show();
                 return true;
             }
             return false;

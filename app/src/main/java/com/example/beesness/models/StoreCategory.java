@@ -3,14 +3,12 @@ package com.example.beesness.models;
 public class StoreCategory {
     private String id;
     private String name;    // "Food & Beverage"
-    private String code;    // "FNB"
 
     public StoreCategory() {}
 
-    public StoreCategory(String id, String name, String code) {
+    public StoreCategory(String id, String name) {
         this.id = id;
         this.name = name;
-        this.code = code;
     }
 
     // --- Getters & Setters ---
@@ -19,7 +17,4 @@ public class StoreCategory {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
 }

@@ -1,7 +1,6 @@
 package com.example.beesness.database.repositories;
 
 import com.example.beesness.database.interfaces.IStoreRepository;
-import com.example.beesness.models.Staff;
 import com.example.beesness.models.Store;
 import com.example.beesness.utils.FirestoreCallback;
 import com.google.firebase.firestore.CollectionReference;
@@ -14,14 +13,13 @@ public class StoreRepository implements IStoreRepository {
 
     private static StoreRepository instance;
     private final FirebaseFirestore db;
-    //well sucks that it adds another code smell here lmao
     private final CollectionReference storeRef;
-    private final CollectionReference staffRef;
+
+    // Removed staffRef since the store is now just the owner
 
     private StoreRepository() {
         db = FirebaseFirestore.getInstance();
         storeRef = db.collection("stores");
-        staffRef = db.collection("staff");
     }
 
     public static synchronized StoreRepository getInstance() {
@@ -31,32 +29,23 @@ public class StoreRepository implements IStoreRepository {
         return instance;
     }
 
+    // Refactored: Removed 'Staff' parameter and removed the Transaction.
+    // Since we are only writing to 'stores' now, a transaction is unnecessary overhead.
     @Override
-    public void createStore(Store store, Staff initialStaff, FirestoreCallback<Store> callback) {
+    public void createStore(Store store, FirestoreCallback<Store> callback) {
         DocumentReference newStoreDoc = storeRef.document();
-        DocumentReference newStaffDoc = staffRef.document();
 
-        //Set the IDs into the objects
+        // Set the ID into the object
         store.setId(newStoreDoc.getId());
 
-        initialStaff.setId(newStaffDoc.getId());
-        initialStaff.setStoreId(newStoreDoc.getId()); // <--- LINKING HAPPENS HERE
-
-        //Run Atomic Transaction
-        db.runTransaction(transaction -> {
-            //Write to 'stores' collection
-            transaction.set(newStoreDoc, store);
-
-            //Write to 'staff' collection
-            transaction.set(newStaffDoc, initialStaff);
-
-            return store; //Return success object
-
-        }).addOnSuccessListener(createdStore -> {
-            callback.onSuccess(createdStore);
-        }).addOnFailureListener(e -> {
-            callback.onFailure(e);
-        });
+        // Write to 'stores' collection
+        newStoreDoc.set(store)
+                .addOnSuccessListener(aVoid -> {
+                    callback.onSuccess(store);
+                })
+                .addOnFailureListener(e -> {
+                    callback.onFailure(e);
+                });
     }
 
     @Override

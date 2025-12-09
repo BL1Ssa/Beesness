@@ -7,20 +7,18 @@ public class Store {
     private String phone;
     private String ownerId;
     private String currency;
-
-    // CHANGED: Clearer naming. Stores "FNB", "RTL", etc.
-    private String categoryId;
+    private String categoryName;
 
     public Store() {}
 
-    public Store(String id, String name, String address, String phone, String ownerId, String currency, String categoryId) {
+    public Store(String id, String name, String address, String phone, String ownerId, String currency, String categoryName) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.phone = phone;
         this.ownerId = ownerId;
         this.currency = currency;
-        this.categoryId = categoryId;
+        this.categoryName = categoryName;
     }
 
     public String getId() {
@@ -71,11 +69,11 @@ public class Store {
         this.currency = currency;
     }
 
-    public String getCategoryId() {
-        return categoryId;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

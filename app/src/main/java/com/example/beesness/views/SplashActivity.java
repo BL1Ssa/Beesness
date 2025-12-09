@@ -19,7 +19,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // 1. Artificial Delay (Optional: just so user sees the logo for 1 sec)
         new Handler().postDelayed(this::checkSession, 1000);
     }
 
@@ -28,13 +27,11 @@ public class SplashActivity extends AppCompatActivity {
 
         authController.checkSession(result -> {
             if (result.status == Result.Status.SUCCESS) {
-                // User is logged in -> Go to Dashboard
                 startActivity(new Intent(this, MainActivity.class));
             } else {
-                // No User -> Go to Login
                 startActivity(new Intent(this, LoginActivity.class));
             }
-            finish(); // Close Splash so back button doesn't return here
+            finish();
         });
     }
 }
