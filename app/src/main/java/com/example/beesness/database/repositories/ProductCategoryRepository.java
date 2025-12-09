@@ -16,7 +16,7 @@ public class ProductCategoryRepository implements IProductCategoryRepository {
 
     private ProductCategoryRepository(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        ref = db.collection("ProductCategory");
+        ref = db.collection("productcategories");
     }
 
     public static synchronized ProductCategoryRepository getInstance(){

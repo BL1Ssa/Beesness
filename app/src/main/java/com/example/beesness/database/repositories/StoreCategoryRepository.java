@@ -12,11 +12,18 @@ import java.util.List;
 public class StoreCategoryRepository implements IStoreCategoryRepository {
 
     private static StoreCategoryRepository instance;
-    private CollectionReference ref;
+    private final CollectionReference ref;
 
     private StoreCategoryRepository(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        ref = db.collection("categories");
+        ref = db.collection("storecategories");
+    }
+
+    public static synchronized StoreCategoryRepository getInstance(){
+        if(instance == null){
+            instance = new StoreCategoryRepository();
+        }
+        return  instance;
     }
 
     @Override

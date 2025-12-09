@@ -6,37 +6,30 @@ import java.util.List;
 public class Receipt {
 
     // 1. Header (Store Info)
-    private String storeName;
-    private String storeAddress;
+    private final String storeName;
+    private final String storeAddress;
 
     // 2. Transaction Info
-    private String orderId;
-    private Date date;
-    private String cashierName;
+    private final String orderId;
+    private final Date date;
+    private final String cashierName;
+    private final List<Product> items;
 
-    // 3. Line Items
-    private List<Product> items;
+    private final double grandTotal;
 
-    // 4. Totals
-    private double grandTotal; // The "Total Price"
-
-    // Constructor: Maps the ERP data to the Receipt format
-    public Receipt(Store store, Order order, Staff cashier) {
+    public Receipt(Store store, Order order, User owner) {
         this.storeName = store.getName();
         this.storeAddress = store.getAddress();
 
         this.orderId = order.getId();
         this.date = order.getDate();
-        this.cashierName = (cashier != null) ? cashier.getRole() : "Staff"; // Ideally use cashier.getName() if available
+        this.cashierName = (owner != null) ? owner.getName() : "Owner";
 
         this.items = order.getItems();
 
-        // --- THE FIX IS HERE ---
-        // Map 'totalRevenue' (ERP term) to 'grandTotal' (Receipt term)
         this.grandTotal = order.getTotalRevenue();
     }
 
-    // --- Getters ---
     public String getStoreName() { return storeName; }
     public String getStoreAddress() { return storeAddress; }
     public String getOrderId() { return orderId; }

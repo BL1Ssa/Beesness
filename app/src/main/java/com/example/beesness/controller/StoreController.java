@@ -2,9 +2,7 @@ package com.example.beesness.controller;
 
 import com.example.beesness.utils.FirestoreCallback;
 import com.example.beesness.database.repositories.StoreRepository;
-import com.example.beesness.factories.StaffFactory;
 import com.example.beesness.factories.StoreFactory;
-import com.example.beesness.models.Staff;
 import com.example.beesness.models.Store;
 import com.example.beesness.models.StoreCategory;
 import com.example.beesness.models.User;
@@ -42,9 +40,7 @@ public class StoreController {
 
         Store store = StoreFactory.create(name, address, phone, currentUser.getId(), currency, selectedCategory);
 
-        Staff ownerStaff = StaffFactory.createOwner(currentUser);
-
-        repository.createStore(store, ownerStaff, new FirestoreCallback<Store>() {
+        repository.createStore(store, new FirestoreCallback<Store>() {
             @Override
             public void onSuccess(Store result) {
                 callback.onResult(Result.success(result.getId(), "Store Created Successfully!"));

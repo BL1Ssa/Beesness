@@ -16,6 +16,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.beesness.R;
 import com.example.beesness.controller.AuthController;
+import com.example.beesness.controller.StoreController;
+import com.example.beesness.models.Store;
+import com.example.beesness.models.User;
+import com.example.beesness.utils.OperationCallback;
+import com.example.beesness.utils.Result;
+
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText emailEt, passwordEt;
     Button loginBtn;
     AuthController authController;
-
+    StoreController storeController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         authController = new AuthController();
+        storeController = new StoreController();
 
         signUpLink = findViewById(R.id.signUpLink);
         emailLbl = findViewById(R.id.labelLoginEmail);
@@ -69,18 +77,41 @@ public class LoginActivity extends AppCompatActivity {
                     loginBtn.setText("Logging In...");
                     break;
                 case SUCCESS:
-                    loginBtn.setEnabled(false);
-                    Toast.makeText(LoginActivity.this,"Login Success!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("USER", result.data);
-                    startActivity(intent);
-                    finishAffinity(); // Clear back stack so they can't go back to login
+                    User user = result.data;
+                    checkStoreAndRedirect(user);
                     break;
                 case ERROR:
                     loginBtn.setEnabled(true);
                     loginBtn.setText("Login");
                     Toast.makeText(LoginActivity.this, "Error: " + result.message, Toast.LENGTH_LONG).show();
                     break;
+            }
+        });
+    }
+
+    private void checkStoreAndRedirect(User user) {
+        storeController.getByOwnerId(user, new OperationCallback<List<Store>>() {
+            @Override
+            public void onResult(Result<List<Store>> result) {
+                if (result.status == Result.Status.SUCCESS) {
+                    List<Store> stores = result.data;
+                    if (stores != null && !stores.isEmpty()) {
+                        Toast.makeText(LoginActivity.this, "Login Successful! Redirecting to your store...", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("USER", user);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(LoginActivity.this, CreateStoreActivity.class);
+                        intent.putExtra("USER", user);
+                        startActivity(intent);
+                    }
+                    finishAffinity();
+                } else if(result.status == Result.Status.ERROR){
+
+                    loginBtn.setEnabled(true);
+                    loginBtn.setText("Login");
+                    Toast.makeText(LoginActivity.this, "Failed to check store status", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
