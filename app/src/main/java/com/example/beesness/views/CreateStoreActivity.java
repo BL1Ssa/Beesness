@@ -68,16 +68,14 @@ public class CreateStoreActivity extends AppCompatActivity {
     }
 
     private void loadCategories() {
-        // Disable button until categories load
         btnCreate.setEnabled(false);
 
-        // Use the Controller, NOT the Repo directly
         categoryController.getAll(new OperationCallback<List<StoreCategory>>() {
             @Override
             public void onResult(Result<List<StoreCategory>> result) {
                 switch (result.status) {
                     case LOADING:
-                        // Optional: Show small spinner
+                        Toast.makeText(CreateStoreActivity.this, "Loading...", Toast.LENGTH_SHORT).show();
                         break;
                     case SUCCESS:
                         List<StoreCategory> categories = result.data;
@@ -86,7 +84,6 @@ public class CreateStoreActivity extends AppCompatActivity {
                             return;
                         }
 
-                        // Populate Spinner
                         ArrayAdapter<StoreCategory> adapter = new ArrayAdapter<>(
                                 CreateStoreActivity.this,
                                 android.R.layout.simple_spinner_item,
@@ -111,7 +108,6 @@ public class CreateStoreActivity extends AppCompatActivity {
         String phone = etPhone.getText().toString().trim();
         StoreCategory selectedCategory = (StoreCategory) spinnerCategory.getSelectedItem();
 
-        // Call StoreController
         storeController.add(name, address, phone, "Rp.", selectedCategory, currentUser, new OperationCallback<String>() {
             @Override
             public void onResult(Result<String> result) {
@@ -124,10 +120,8 @@ public class CreateStoreActivity extends AppCompatActivity {
                     case SUCCESS:
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(CreateStoreActivity.this, "Store Created!", Toast.LENGTH_SHORT).show();
-
-                        // Navigate to Dashboard
                         Intent intent = new Intent(CreateStoreActivity.this, MainActivity.class);
-                        // We don't need to pass store ID, MainActivity will fetch it
+                        intent.putExtra("USER", currentUser);
                         startActivity(intent);
                         finish();
                         break;

@@ -64,7 +64,6 @@
                     android:id="@+id/etStoreName"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@drawable/bg_spinner_rounded"
                     android:hint="e.g. John's Honey Farm"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
@@ -85,7 +84,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="50dp"
-                    android:background="@drawable/bg_spinner_rounded"
                     android:hint="Full Address"
                     android:padding="12dp"
                     android:inputType="textPostalAddress|textMultiLine"
@@ -103,7 +101,6 @@
                     android:id="@+id/etStorePhone"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@drawable/bg_spinner_rounded"
                     android:hint="+62 8..."
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
@@ -122,6 +119,9 @@
                     android:id="@+id/spinnerCategory"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:spinnerMode="dropdown"
+                    android:popupTheme="@style/SpinnerNoOverlap"
+
                     android:background="@drawable/bg_spinner_rounded"
                     android:layout_marginBottom="24dp"/>
 
