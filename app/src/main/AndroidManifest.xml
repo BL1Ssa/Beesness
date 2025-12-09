@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Beesness">
         <activity
-            android:name=".SignupActivity"
+            android:name=".views.SignupActivity"
             android:exported="false" />
         <activity
             android:name=".views.CreateStoreActivity"
