@@ -35,10 +35,10 @@ public class AuthController {
         });
     }
 
-    public void register(String name, String email, String password, String confirmPassword, OperationCallback<User> callback) {
+    public void register(String name, String email, String phonenum, String password, String confirmPassword, OperationCallback<User> callback) {
         callback.onResult(Result.loading());
 
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phonenum.isEmpty()) {
             callback.onResult(Result.error("All fields are required"));
             return;
         }
@@ -51,7 +51,7 @@ public class AuthController {
             return;
         }
 
-        repository.register(email, password, name, new FirestoreCallback<User>() {
+        repository.register(email, password, name, phonenum, new FirestoreCallback<User>() {
             @Override
             public void onSuccess(User result) {
                 callback.onResult(Result.success(result, "Account created successfully!"));

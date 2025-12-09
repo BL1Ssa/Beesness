@@ -33,7 +33,7 @@ public class AuthRepository {
                 .addOnFailureListener(callback::onFailure);
     }
 
-    public void register(String email, String password, String name, FirestoreCallback<User> callback) {
+    public void register(String email, String password, String name, String phonenum, FirestoreCallback<User> callback) {
         // 1. Create Account in Firebase Auth
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
@@ -42,7 +42,7 @@ public class AuthRepository {
 
                     // 2. Create User Object
                     // (Role defaults to OWNER because they are registering the app)
-                    User newUser = new User(uid, name, email, "OWNER");
+                    User newUser = new User(uid, name, email, phonenum);
 
                     // 3. Save Profile to Firestore
                     saveUserProfile(newUser, callback);

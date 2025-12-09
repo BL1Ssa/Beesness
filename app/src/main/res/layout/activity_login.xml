@@ -111,6 +111,7 @@
                     android:layout_height="wrap_content"
                     android:text="Sign up here"
                     android:textColor="@color/blue_link"
+                    android:id="@+id/signUpLink"
                     android:layout_toRightOf="@id/noAccount"/>
             </RelativeLayout>
         </LinearLayout>
