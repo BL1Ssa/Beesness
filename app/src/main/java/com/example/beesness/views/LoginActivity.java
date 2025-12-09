@@ -54,34 +54,33 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email, password;
-                email = emailEt.getText().toString();
-                password = passwordEt.getText().toString();
+        loginBtn.setOnClickListener(v -> handleLogin());
+    }
 
-                authController.login(email, password, result -> {
-                    switch (result.status) {
-                        case LOADING:
-                            loginBtn.setEnabled(false);
-                            loginBtn.setText("Logging In...");
-                            break;
-                        case SUCCESS:
-                            loginBtn.setEnabled(false);
-                            Toast.makeText(LoginActivity.this,"Login Success!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.putExtra("USER", result.data);
-                            startActivity(intent);
-                            finishAffinity(); // Clear back stack so they can't go back to login
-                            break;
-                        case ERROR:
-                            loginBtn.setEnabled(true);
-                            loginBtn.setText("Login");
-                            Toast.makeText(LoginActivity.this, "Error: " + result.message, Toast.LENGTH_LONG).show();
-                            break;
-                    }
-                });
+    public void handleLogin(){
+        String email, password;
+        email = emailEt.getText().toString();
+        password = passwordEt.getText().toString();
+
+        authController.login(email, password, result -> {
+            switch (result.status) {
+                case LOADING:
+                    loginBtn.setEnabled(false);
+                    loginBtn.setText("Logging In...");
+                    break;
+                case SUCCESS:
+                    loginBtn.setEnabled(false);
+                    Toast.makeText(LoginActivity.this,"Login Success!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("USER", result.data);
+                    startActivity(intent);
+                    finishAffinity(); // Clear back stack so they can't go back to login
+                    break;
+                case ERROR:
+                    loginBtn.setEnabled(true);
+                    loginBtn.setText("Login");
+                    Toast.makeText(LoginActivity.this, "Error: " + result.message, Toast.LENGTH_LONG).show();
+                    break;
             }
         });
     }

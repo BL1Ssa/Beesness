@@ -65,42 +65,40 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-        signupBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name, email, phonenum, password, confirmPassword;
-                name = nameEt.getText().toString();
-                email = emailEt.getText().toString();
-                phonenum = phonenumEt.getText().toString();
-                password = passwordEt.getText().toString();
-                confirmPassword = confirmPasswordEt.getText().toString();
+        signupBtn.setOnClickListener(v -> handleSignUp());
+    }
 
-                authController.register(name, email, phonenum, password, confirmPassword, result -> {
-                    switch (result.status) {
-                        case LOADING:
-                            signupBtn.setEnabled(false);
-                            signupBtn.setText("Creating Account...");
-                            break;
+    public void handleSignUp(){
+        String name, email, phonenum, password, confirmPassword;
+        name = nameEt.getText().toString();
+        email = emailEt.getText().toString();
+        phonenum = phonenumEt.getText().toString();
+        password = passwordEt.getText().toString();
+        confirmPassword = confirmPasswordEt.getText().toString();
 
-                        case SUCCESS:
-                            signupBtn.setEnabled(true);
-                            Toast.makeText(SignupActivity.this,"Account Created!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(SignupActivity.this, CreateStoreActivity.class);
-                            // Pass the User object so CreateStore knows who the owner is
-                            intent.putExtra("USER", result.data);
-                            startActivity(intent);
-                            finishAffinity(); // Clear back stack so they can't go back to signup
-                            break;
+        authController.register(name, email, phonenum, password, confirmPassword, result -> {
+            switch (result.status) {
+                case LOADING:
+                    signupBtn.setEnabled(false);
+                    signupBtn.setText("Creating Account...");
+                    break;
 
-                        case ERROR:
-                            signupBtn.setEnabled(true);
-                            signupBtn.setText("Sign Up");
-                            Toast.makeText(SignupActivity.this, "Error: " + result.message, Toast.LENGTH_LONG).show();
-                            break;
-                    }
-                });
+                case SUCCESS:
+                    signupBtn.setEnabled(true);
+                    Toast.makeText(SignupActivity.this,"Account Created!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SignupActivity.this, CreateStoreActivity.class);
+                    // Pass the User object so CreateStore knows who the owner is
+                    intent.putExtra("USER", result.data);
+                    startActivity(intent);
+                    finishAffinity(); // Clear back stack so they can't go back to signup
+                    break;
+
+                case ERROR:
+                    signupBtn.setEnabled(true);
+                    signupBtn.setText("Sign Up");
+                    Toast.makeText(SignupActivity.this, "Error: " + result.message, Toast.LENGTH_LONG).show();
+                    break;
             }
         });
-
     }
 }
