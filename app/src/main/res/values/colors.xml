@@ -9,4 +9,11 @@
     <color name="red_growth_line">#F85127</color>
     <color name="orange_sales_line">#DF8E30</color>
     <color name="blue_link">#3366CC </color>
+    <color name="light_green">#4CAF50</color>
+    <color name="gray_thin_text">#757575</color>
+    <color name="cardfg">#000000</color>
+    <color name="productbg">#FFF8E1</color>
+    <color name="productfg">#FFC107</color>
+    <color name="bggray">#F5F5F5</color>
+    <color name="cancelgray">#E0E0E0</color>
 </resources>

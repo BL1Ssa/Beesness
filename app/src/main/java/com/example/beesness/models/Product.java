@@ -1,19 +1,23 @@
 package com.example.beesness.models;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
     private String id;
+    private String storeId;
     private String name;
     private double buyPrice;
     private double sellPrice;
     private String description;
-    private int image;
+    private String image;
     private String productType;
     private int quantity;
 
     public Product(){}
 
-    public Product(String id, String name, double buyPrice, double sellPrice, String description, int image, String productType, int quantity) {
+    public Product(String id, String storeId, String name, double buyPrice, double sellPrice, String description, String image, String productType, int quantity) {
         this.id = id;
+        this.storeId = storeId;
         this.name = name;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
@@ -63,11 +67,11 @@ public class Product {
         this.description = description;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -85,5 +89,13 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
     }
 }

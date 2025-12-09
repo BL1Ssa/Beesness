@@ -77,7 +77,15 @@ public class ProductRepository implements IProductRepository {
 
     @Override
     public void getAll(FirestoreCallback<List<Product>> callback) {
+        //not recommended to use this at all :v
         productRef.get().addOnSuccessListener(qs ->
+                callback.onSuccess(qs.toObjects(Product.class))
+        ).addOnFailureListener(callback::onFailure);
+    }
+
+    @Override
+    public void getAllByStoreId(String storeId, FirestoreCallback<List<Product>> callback) {
+        productRef.whereEqualTo("storeId", storeId).get().addOnSuccessListener(qs ->
                 callback.onSuccess(qs.toObjects(Product.class))
         ).addOnFailureListener(callback::onFailure);
     }

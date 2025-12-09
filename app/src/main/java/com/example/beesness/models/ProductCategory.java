@@ -1,5 +1,7 @@
 package com.example.beesness.models;
 
+import androidx.annotation.NonNull;
+
 public class ProductCategory {
     private String id;
     private String name;
@@ -33,5 +35,11 @@ public class ProductCategory {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return name;
     }
 }

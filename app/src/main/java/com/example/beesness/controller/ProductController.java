@@ -1,5 +1,7 @@
 package com.example.beesness.controller;
 
+import android.net.Uri;
+
 import com.example.beesness.utils.FirestoreCallback;
 import com.example.beesness.database.repositories.ProductRepository;
 import com.example.beesness.factories.ProductFactory;
@@ -7,8 +9,11 @@ import com.example.beesness.models.Product;
 import com.example.beesness.models.ProductCategory;
 import com.example.beesness.utils.OperationCallback;
 import com.example.beesness.utils.Result;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ProductController {
 
@@ -18,8 +23,8 @@ public class ProductController {
         this.repository = ProductRepository.getInstance();
     }
 
-    public void add(String name, String buyPriceStr, String sellPriceStr, String description,
-                    String quantityStr, ProductCategory category, int image,
+    public void add(String storeId, String name, String buyPriceStr, String sellPriceStr, String description,
+                    String quantityStr, ProductCategory category, String image,
                     OperationCallback<String> callback) {
 
         callback.onResult(Result.loading());
@@ -48,25 +53,43 @@ public class ProductController {
             return;
         }
 
-        Product product = ProductFactory.create(name, buyPrice, sellPrice, description, image, category.getName(), quantity);
+        if (image != null && !image.isEmpty()) {
 
-        repository.add(product, category.getCode(), new FirestoreCallback<Product>() {
-            @Override
-            public void onSuccess(Product result) {
-                callback.onResult(Result.success(result.getId(), "Product Added Successfully!"));
-            }
+            // 1. Create a reference to Firebase Storage
+            // "product_images/" is the folder name in the cloud
+            String filename = UUID.randomUUID().toString(); // Random name (e.g., "abc-123-xyz")
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference()
+                    .child("product_images/" + filename);
 
-            @Override
-            public void onFailure(Exception e) {
-                callback.onResult(Result.error(e.getMessage()));
-            }
-        });
+            Uri fileUri = Uri.parse(image);
+
+            // 2. Upload the file
+            storageRef.putFile(fileUri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        // 3. Upload Success! Now get the REAL link (https://...)
+                        storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            String cloudUrl = uri.toString();
+
+                            // 4. Save Product with the Cloud URL
+                            Product product = ProductFactory.create(storeId, name, buyPrice, sellPrice, description, cloudUrl, category.getName(), quantity);
+                            saveToFirestore(product, category.getCode(), callback);
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        callback.onResult(Result.error("Image Upload Failed: " + e.getMessage()));
+                    });
+
+        } else {
+            // No Image selected? Save with empty string
+            Product product = ProductFactory.create(storeId, name, buyPrice, sellPrice, description, "", category.getName(), quantity);
+            saveToFirestore(product, category.getCode(), callback);
+        }
     }
 
-    public void getAll(OperationCallback<List<Product>> callback) {
+    public void getAll(String storeId, OperationCallback<List<Product>> callback) {
         callback.onResult(Result.loading());
 
-        repository.getAll(new FirestoreCallback<List<Product>>() {
+        repository.getAllByStoreId(storeId, new FirestoreCallback<List<Product>>() {
             @Override
             public void onSuccess(List<Product> result) {
                 if (result.isEmpty()) {
@@ -97,8 +120,8 @@ public class ProductController {
         });
     }
 
-    public void update(String productId, String name, String buyPriceStr, String sellPriceStr, String description,
-                       String quantityStr, ProductCategory category, int image,
+    public void update(String productId, String storeId, String name, String buyPriceStr, String sellPriceStr, String description,
+                       String quantityStr, ProductCategory category, String image,
                        OperationCallback<String> callback) {
         callback.onResult(Result.loading());
         if(productId.isEmpty()){
@@ -129,7 +152,7 @@ public class ProductController {
             return;
         }
 
-        Product product = ProductFactory.create(productId, name, buyPrice, sellPrice, description, image, category.getName(), quantity);
+        Product product = ProductFactory.create(productId, storeId, name, buyPrice, sellPrice, description, image, category.getName(), quantity);
 
         repository.update(productId, product, new FirestoreCallback<Void>() {
             @Override
@@ -156,6 +179,20 @@ public class ProductController {
             @Override
             public void onSuccess(Void result) {
                 callback.onResult(Result.success(productId, "Product Deleted"));
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onResult(Result.error(e.getMessage()));
+            }
+        });
+    }
+
+    private void saveToFirestore(Product product, String categoryCode, OperationCallback<String> callback) {
+        repository.add(product, categoryCode, new FirestoreCallback<Product>() {
+            @Override
+            public void onSuccess(Product result) {
+                callback.onResult(Result.success(result.getId(), "Product Added Successfully!"));
             }
 
             @Override

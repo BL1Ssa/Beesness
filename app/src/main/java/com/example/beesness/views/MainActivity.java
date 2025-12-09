@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         tvTotalExpense.setText(store.getCurrency() + " 0");
     }
 
-    // --- UPDATED NAVIGATION ---
     private void setupNavigation() {
         // Highlight "Home" by default
         bottomNav.setSelectedItemId(R.id.nav_home);
@@ -139,7 +138,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             } else if (id == R.id.nav_stock) {
-                Toast.makeText(this, "Opening Stock...", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, StockActivity.class);
+                intent.putExtra("USER", currentUser);
+                startActivity(intent);
                 return true;
 
             } else if (id == R.id.nav_profile) {

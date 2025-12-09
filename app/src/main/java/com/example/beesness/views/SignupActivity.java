@@ -40,22 +40,11 @@ public class SignupActivity extends AppCompatActivity {
         });
 
         authController = new AuthController();
-
         loginLink = findViewById(R.id.loginLink);
 
-        nameLbl = findViewById(R.id.labelSignUpName);
-        emailLbl = findViewById(R.id.labelSignUpEmail);
-        phonenumLbl = findViewById(R.id.labelSignUpPhonenum);
-        passwordLbl = findViewById(R.id.labelSignUpPassword);
-        confirmPasswordLbl = findViewById(R.id.labelSignUpConfirmPassword);
-
-        nameEt = findViewById(R.id.etSignUpName);
-        emailEt = findViewById(R.id.etSignUpEmail);
-        phonenumEt = findViewById(R.id.etSignUpPhonenum);
-        passwordEt = findViewById(R.id.etSignUpPassword);
-        confirmPasswordEt = findViewById(R.id.etSignUpConfirmPassword);
-
-        signupBtn = findViewById(R.id.btnSignUp);
+        initializeLabels();
+        initializeEditText();
+        initializeButton();
 
         loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +55,26 @@ public class SignupActivity extends AppCompatActivity {
         });
 
         signupBtn.setOnClickListener(v -> handleSignUp());
+    }
+
+    private void initializeButton() {
+        signupBtn = findViewById(R.id.btnSignUp);
+    }
+
+    private void initializeEditText() {
+        nameEt = findViewById(R.id.etSignUpName);
+        emailEt = findViewById(R.id.etSignUpEmail);
+        phonenumEt = findViewById(R.id.etSignUpPhonenum);
+        passwordEt = findViewById(R.id.etSignUpPassword);
+        confirmPasswordEt = findViewById(R.id.etSignUpConfirmPassword);
+    }
+
+    private void initializeLabels() {
+        nameLbl = findViewById(R.id.labelSignUpName);
+        emailLbl = findViewById(R.id.labelSignUpEmail);
+        phonenumLbl = findViewById(R.id.labelSignUpPhonenum);
+        passwordLbl = findViewById(R.id.labelSignUpPassword);
+        confirmPasswordLbl = findViewById(R.id.labelSignUpConfirmPassword);
     }
 
     public void handleSignUp(){
