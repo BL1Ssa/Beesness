@@ -193,4 +193,33 @@ public class ProductController {
             }
         });
     }
+
+    public void updateStock(String productId, int newStock, OperationCallback<String> callback) {
+        // 1. Get the product first to ensure it exists and we have the latest data
+        repository.getById(productId, new FirestoreCallback<Product>() {
+            @Override
+            public void onSuccess(Product product) {
+                // 2. Update ONLY the quantity locally
+                product.setQuantity(newStock);
+
+                // 3. Save to database
+                repository.update(productId, product, new FirestoreCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        callback.onResult(Result.success(productId, "Stock Updated"));
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        callback.onResult(Result.error(e.getMessage()));
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onResult(Result.error("Product not found"));
+            }
+        });
+    }
 }

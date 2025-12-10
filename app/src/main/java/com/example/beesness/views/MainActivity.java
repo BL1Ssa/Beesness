@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,6 +18,7 @@ import com.example.beesness.models.Store;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.OperationCallback;
 import com.example.beesness.utils.Result;
+import com.example.beesness.utils.SessionManager; // <--- IMPORT THIS
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -26,41 +26,36 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    // UI Components
     private Spinner spinnerStore;
-    private String storeId;
     private TextView tvTotalRevenue, tvTotalExpense;
     private BottomNavigationView bottomNav;
-    // Removed FloatingActionButton
+    private ImageButton addStoreBtn;
 
-    // Controllers & Data
     private StoreController storeController;
+    private SessionManager sessionManager;
     private User currentUser;
     private List<Store> userStores = new ArrayList<>();
-    private ImageButton addStoreBtn;
+    private String currentStoreId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // 1. Get User from Intent
-        currentUser = (User) getIntent().getSerializableExtra("USER");
 
-        if (currentUser == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+        sessionManager = new SessionManager(this);
+
+        if (!sessionManager.isLoggedIn()) {
+            redirectToLogin();
             return;
         }
 
+        currentUser = sessionManager.getUserDetail();
 
         storeController = new StoreController();
-        loadUserStores();
+
         initViews();
-
+        loadUserStores();
         setupNavigation();
-
-        if(getIntent().getStringExtra("storeId") != null) storeId = getIntent().getStringExtra("storeId");
-        if(storeId == null) storeId = userStores.get(0).getId();
     }
 
     private void initViews() {
@@ -69,35 +64,31 @@ public class MainActivity extends AppCompatActivity {
         tvTotalExpense = findViewById(R.id.tvTotalExpense);
         bottomNav = findViewById(R.id.bottom_navigation);
         addStoreBtn = findViewById(R.id.addStoreButton);
+
         initBtn();
     }
 
-    private void initBtn(){
-        addStoreBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CreateStoreActivity.class);
-                intent.putExtra("USER", currentUser);
-                intent.putExtra("hasStore", true);
-                if(!storeId.isEmpty()) intent.putExtra("storeId", storeId);
-                startActivity(intent);
-            }
+    private void initBtn() {
+        addStoreBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CreateStoreActivity.class);
+            intent.putExtra("hasStore", true); // This logic is fine to keep if specific
+            startActivity(intent);
         });
     }
-
-    // --- LOGIC: Load Stores owned by this User ---
     private void loadUserStores() {
         storeController.getByOwnerId(currentUser, new OperationCallback<List<Store>>() {
             @Override
             public void onResult(Result<List<Store>> result) {
                 switch (result.status) {
                     case LOADING:
+                        // Optional: Show a progress bar
                         break;
                     case SUCCESS:
                         userStores = result.data;
                         if (userStores == null || userStores.isEmpty()) {
                             Toast.makeText(MainActivity.this, "Welcome! Please create your first store.", Toast.LENGTH_LONG).show();
-                            // Redirect to CreateStoreActivity...
+                            startActivity(new Intent(MainActivity.this, CreateStoreActivity.class));
+                            finish();
                         } else {
                             setupStoreSpinner();
                         }
@@ -111,32 +102,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupStoreSpinner() {
-        int index = -1;
         List<String> storeNames = new ArrayList<>();
         for (Store s : userStores) {
-            if(!storeId.isEmpty() && storeId.equals(s.getId())){
-                index = userStores.indexOf(s);
-            }
             storeNames.add(s.getName());
         }
-
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, storeNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerStore.setAdapter(adapter);
 
-        if(index != -1) spinnerStore.setSelection(index);
+        String savedStoreId = sessionManager.getCurrentStoreId();
+        int selectedIndex = 0;
+
+        if (savedStoreId != null) {
+            for (int i = 0; i < userStores.size(); i++) {
+                if (userStores.get(i).getId().equals(savedStoreId)) {
+                    selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        spinnerStore.setSelection(selectedIndex);
+
+        currentStoreId = userStores.get(selectedIndex).getId();
+        sessionManager.saveCurrentStore(currentStoreId);
+        loadDashboardData(userStores.get(selectedIndex));
 
         spinnerStore.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                loadDashboardData(userStores.get(position));
-                storeId = userStores.get(position).getId();
+                Store selectedStore = userStores.get(position);
+
+                sessionManager.saveCurrentStore(selectedStore.getId());
+                currentStoreId = selectedStore.getId();
+
+                loadDashboardData(selectedStore);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                storeId = userStores.get(0).getId();
+
             }
         });
     }
@@ -157,28 +163,31 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             } else if (id == R.id.nav_transaction) {
-                // This replaces your old FAB logic
-                Toast.makeText(this, "Opening POS (Point of Sale)...", Toast.LENGTH_SHORT).show();
-                // Intent intent = new Intent(MainActivity.this, TransactionActivity.class);
-                // startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
+                startActivity(intent);
                 return true;
 
             } else if (id == R.id.nav_cart) {
-                Toast.makeText(this, "Opening Orders...", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, POSActivity.class);
+                startActivity(intent);
                 return true;
 
             } else if (id == R.id.nav_stock) {
                 Intent intent = new Intent(MainActivity.this, StockActivity.class);
-                intent.putExtra("USER", currentUser);
-                intent.putExtra("storeId", storeId);
                 startActivity(intent);
                 return true;
 
             } else if (id == R.id.nav_profile) {
-                Toast.makeText(this, "Opening Profile...", Toast.LENGTH_SHORT).show();
                 return true;
             }
             return false;
         });
+    }
+
+    private void redirectToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

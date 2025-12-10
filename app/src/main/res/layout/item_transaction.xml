@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="6dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTransId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="#ID-123456"
+                android:textStyle="bold"
+                android:textColor="#333"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tvType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SALE"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"
+                android:textStyle="bold"
+                android:textColor="#757575"/>
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12 Dec 2025"
+                android:textSize="12sp"
+                android:textColor="#AAA"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rp 50.000"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#4CAF50"/>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

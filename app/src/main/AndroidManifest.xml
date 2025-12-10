@@ -14,6 +14,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Beesness">
         <activity
+            android:name=".views.TransactionDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.TransactionHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.adapters.TransactionAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".views.POSActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.AddProductActivity"
             android:exported="false" />
         <activity

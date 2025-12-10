@@ -16,4 +16,5 @@
     <color name="productfg">#FFC107</color>
     <color name="bggray">#F5F5F5</color>
     <color name="cancelgray">#E0E0E0</color>
+    <color name="gray_underline">#E0E0E0</color>
 </resources>

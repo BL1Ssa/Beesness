@@ -18,6 +18,7 @@ import com.example.beesness.models.Product;
 import com.example.beesness.models.Store;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.Result;
+import com.example.beesness.utils.SessionManager;
 import com.example.beesness.views.adapters.ProductAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,6 +38,7 @@ public class StockActivity extends AppCompatActivity {
     private User currentUser;
     private String currentStoreId;
     private BottomNavigationView bottomNav;
+    private SessionManager sessionManager;
 
 
     @Override
@@ -45,11 +47,18 @@ public class StockActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stock);
 
         bottomNav = findViewById(R.id.bottom_navigation);
+
+        sessionManager = new SessionManager(this);
+        currentUser = sessionManager.getUserDetail();
+        currentStoreId = sessionManager.getCurrentStoreId();
+        if (currentStoreId == null) {
+            Toast.makeText(this, "No store selected", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         productController = new ProductController();
         storeController = new StoreController();
-
-        currentUser = (User) getIntent().getSerializableExtra("USER");
-        currentStoreId = getIntent().getStringExtra("storeId");
 
         initViews();
         setupRecyclerView();
@@ -80,7 +89,6 @@ public class StockActivity extends AppCompatActivity {
         fabAdd.setOnClickListener(v -> {
             if (currentStoreId != null) {
                 Intent intent = new Intent(StockActivity.this, AddProductActivity.class);
-                intent.putExtra("STORE_ID", currentStoreId);
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Please wait, loading store info...", Toast.LENGTH_SHORT).show();
@@ -163,27 +171,19 @@ public class StockActivity extends AppCompatActivity {
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
-                Intent intent = new Intent(StockActivity.this, MainActivity.class);
-                intent.putExtra("USER", currentUser);
-                if(!currentStoreId.isEmpty()) intent.putExtra("storeId", currentStoreId);
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            } else if (id == R.id.nav_transaction) {
+                Intent intent = new Intent(StockActivity.this, TransactionHistoryActivity.class);
                 startActivity(intent);
                 return true;
 
-            } else if (id == R.id.nav_transaction) {
-                // This replaces your old FAB logic
-                Toast.makeText(this, "Opening POS (Point of Sale)...", Toast.LENGTH_SHORT).show();
-                // Intent intent = new Intent(MainActivity.this, TransactionActivity.class);
-                // startActivity(intent);
-                return true;
-
             } else if (id == R.id.nav_cart) {
-                Toast.makeText(this, "Opening Orders...", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(StockActivity.this, POSActivity.class);
+                startActivity(intent);
                 return true;
 
             } else if (id == R.id.nav_stock) {
-//                Intent intent = new Intent(StockActivity.this, StockActivity.class);
-//                intent.putExtra("USER", currentUser);
-//                startActivity(intent);
                 return true;
 
             } else if (id == R.id.nav_profile) {
