@@ -163,9 +163,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             } else if (id == R.id.nav_transaction) {
-                Toast.makeText(this, "Opening History...", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
+                startActivity(intent);
                 return true;
 
             } else if (id == R.id.nav_cart) {
@@ -179,8 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             } else if (id == R.id.nav_profile) {
-                sessionManager.logout();
-                redirectToLogin();
                 return true;
             }
             return false;

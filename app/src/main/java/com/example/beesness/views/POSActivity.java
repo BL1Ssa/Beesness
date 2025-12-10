@@ -116,7 +116,7 @@ public class POSActivity extends AppCompatActivity {
             return;
         }
 
-        transactionController.processCheckout(cartList, currentTotal, result -> {
+        transactionController.processCheckout(cartList, storeId, currentTotal, result -> {
             if (result.status == Result.Status.SUCCESS) {
                 Toast.makeText(this, "Transaction Success!", Toast.LENGTH_LONG).show();
                 // Clear Cart
@@ -151,10 +151,8 @@ public class POSActivity extends AppCompatActivity {
                 return true;
 
             } else if (id == R.id.nav_transaction) {
-                // This replaces your old FAB logic
-                Toast.makeText(this, "Opening POS (Point of Sale)...", Toast.LENGTH_SHORT).show();
-                // Intent intent = new Intent(MainActivity.this, TransactionActivity.class);
-                // startActivity(intent);
+                 Intent intent = new Intent(POSActivity.this, TransactionHistoryActivity.class);
+                 startActivity(intent);
                 return true;
 
             } else if (id == R.id.nav_cart) {

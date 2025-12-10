@@ -41,7 +41,9 @@ public class TransactionRepository implements ITransactionRepository {
 
     @Override
     public void getAll(String storeId, FirestoreCallback<List<Transaction>> callback) {
-        ref.whereEqualTo("storeId", storeId).get()
+        ref.whereEqualTo("storeId", storeId)
+                .orderBy("date", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Transaction> transactionList = queryDocumentSnapshots.toObjects(Transaction.class);
                     callback.onSuccess(transactionList);

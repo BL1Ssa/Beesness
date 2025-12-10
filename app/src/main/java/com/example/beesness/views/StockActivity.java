@@ -174,7 +174,8 @@ public class StockActivity extends AppCompatActivity {
                 startActivity(new Intent(this, MainActivity.class));
                 return true;
             } else if (id == R.id.nav_transaction) {
-                Toast.makeText(this, "Opening POS (Point of Sale)...", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(StockActivity.this, TransactionHistoryActivity.class);
+                startActivity(intent);
                 return true;
 
             } else if (id == R.id.nav_cart) {
