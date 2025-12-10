@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,8 +19,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.beesness.R;
 import com.example.beesness.controller.ProductController;
+import com.example.beesness.models.Product;
 import com.example.beesness.models.ProductCategory;
 import com.example.beesness.utils.Result;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +34,21 @@ public class AddProductActivity extends AppCompatActivity {
     private ImageView ivProductImage;
     private Button btnSave, btnCancel;
 
+    // private Button btnDelete;
+
     private ProductController productController;
     private String storeId;
-
     private Uri selectedImageUri = null;
+
+    // === EDIT MODE VARIABLES ===
+    private Product productToEdit;
+    private boolean isEditMode = false;
 
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     selectedImageUri = result.getData().getData();
-                    // Show the selected image immediately
                     ivProductImage.setImageURI(selectedImageUri);
                 }
             }
@@ -52,14 +60,22 @@ public class AddProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_product);
 
         productController = new ProductController();
+
         storeId = getIntent().getStringExtra("STORE_ID");
+        if (getIntent().hasExtra("PRODUCT_TO_EDIT")) {
+            productToEdit = (Product) getIntent().getSerializableExtra("PRODUCT_TO_EDIT");
+            isEditMode = true;
+        }
 
         initViews();
         setupSpinner();
 
-        ivProductImage.setOnClickListener(v -> openGallery());
+        if (isEditMode) {
+            setupEditMode();
+        }
 
-        btnSave.setOnClickListener(v -> saveProduct());
+        ivProductImage.setOnClickListener(v -> openGallery());
+        btnSave.setOnClickListener(v -> saveOrUpdateProduct());
         btnCancel.setOnClickListener(v -> finish());
     }
 
@@ -73,6 +89,25 @@ public class AddProductActivity extends AppCompatActivity {
         ivProductImage = findViewById(R.id.ivProductImage);
         btnSave = findViewById(R.id.btnSave);
         btnCancel = findViewById(R.id.btnCancel);
+    }
+
+    private void setupEditMode() {
+        TextView title = findViewById(R.id.tvTitle);
+        if(title != null) title.setText("Edit Product");
+        btnSave.setText("Update Product");
+
+        // Fill Fields
+        etName.setText(productToEdit.getName());
+        etBuyPrice.setText(String.valueOf((long)productToEdit.getBuyPrice()));
+        etSellPrice.setText(String.valueOf((long)productToEdit.getSellPrice()));
+        etStock.setText(String.valueOf(productToEdit.getQuantity()));
+        etDesc.setText(productToEdit.getDescription());
+
+        if (productToEdit.getImage() != null && !productToEdit.getImage().isEmpty()) {
+            Picasso.get().load(productToEdit.getImage())
+                    .fit().centerCrop().into(ivProductImage);
+        }
+
     }
 
     private void openGallery() {
@@ -89,10 +124,7 @@ public class AddProductActivity extends AppCompatActivity {
         spinnerCategory.setAdapter(adapter);
     }
 
-    private void saveProduct() {
-        btnSave.setEnabled(false);
-        btnSave.setText("Saving...");
-
+    private void saveOrUpdateProduct() {
         String name = etName.getText().toString();
         String buyPrice = etBuyPrice.getText().toString();
         String sellPrice = etSellPrice.getText().toString();
@@ -100,34 +132,49 @@ public class AddProductActivity extends AppCompatActivity {
         String desc = etDesc.getText().toString();
         ProductCategory selectedCategory = (ProductCategory) spinnerCategory.getSelectedItem();
 
-        // Check if image is selected
-        String imageString = "";
+        String imageToUse = "";
+
         if (selectedImageUri != null) {
-            imageString = selectedImageUri.toString();
-        } else {
-            // Optional: Handle case where no image is picked (maybe use a default string)
-            imageString = "";
+            imageToUse = selectedImageUri.toString();
+        } else if (isEditMode) {
+            imageToUse = productToEdit.getImage();
         }
 
-        productController.add(
-                storeId,
-                name,
-                buyPrice,
-                sellPrice,
-                desc,
-                stock,
-                selectedCategory,
-                imageString,
-                result -> {
-                    if (result.status == Result.Status.SUCCESS) {
-                        Toast.makeText(this, "Product Added!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else if (result.status == Result.Status.ERROR) {
+        btnSave.setEnabled(false);
+        btnSave.setEnabled(false);
+        btnSave.setClickable(false);
+        btnCancel.setClickable(false);
+        btnSave.setText("Adding Product...");
+        if (isEditMode) {
+            // === UPDATE EXISTING ===
+            productController.update(
+                    productToEdit.getId(),
+                    storeId, name, buyPrice, sellPrice, desc, stock,
+                    selectedCategory, imageToUse,
+                    result -> {
                         btnSave.setEnabled(true);
-                        btnSave.setText("Add Product");
-                        Toast.makeText(this, "Error: " + result.message, Toast.LENGTH_SHORT).show();
+                        if (result.status == Result.Status.SUCCESS) {
+                            Toast.makeText(this, "Product Updated!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else if(result.status == Result.Status.ERROR){
+                            Toast.makeText(this, "Update Failed: " + result.message, Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-        );
+            );
+        } else {
+            productController.add(
+                    storeId, name, buyPrice, sellPrice, desc, stock,
+                    selectedCategory, imageToUse,
+                    result -> {
+                        btnSave.setEnabled(true);
+                        if (result.status == Result.Status.SUCCESS) {
+                            Toast.makeText(this, "Product Added!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else if (result.status == Result.Status.ERROR){
+                            Toast.makeText(this, "Error: " + result.message, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            );
+        }
     }
 }

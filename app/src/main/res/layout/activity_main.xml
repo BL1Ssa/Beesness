@@ -39,14 +39,27 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
-=
 
-        <Spinner
-            android:id="@+id/spinnerStoreSelector"
-            android:layout_width="120dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_spinner_rounded"
-            android:minHeight="48dp" />
+            android:orientation="horizontal">
+            <Spinner
+                android:id="@+id/spinnerStoreSelector"
+                android:layout_width="120dp"
+                android:layout_marginRight="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_spinner_rounded"
+                android:minHeight="48dp" />
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_input_add"
+                android:id="@+id/addStoreButton"
+                android:background="@drawable/round_image_button"
+                android:elevation="4dp"/>
+        </LinearLayout>
+
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -256,7 +269,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Expenses"
+                            android:text="Online Orders"
                             android:textSize="16sp"
                             android:textStyle="bold"/>
                         <TextView

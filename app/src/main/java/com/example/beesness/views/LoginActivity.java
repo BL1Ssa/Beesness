@@ -99,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Login Successful! Redirecting to your store...", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtra("USER", user);
+                        intent.putExtra("storeId", stores.get(0).getId());
                         startActivity(intent);
                     } else {
                         Intent intent = new Intent(LoginActivity.this, CreateStoreActivity.class);

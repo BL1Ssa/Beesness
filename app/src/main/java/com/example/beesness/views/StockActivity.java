@@ -49,6 +49,7 @@ public class StockActivity extends AppCompatActivity {
         storeController = new StoreController();
 
         currentUser = (User) getIntent().getSerializableExtra("USER");
+        currentStoreId = getIntent().getStringExtra("storeId");
 
         initViews();
         setupRecyclerView();
@@ -93,6 +94,14 @@ public class StockActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new ProductAdapter();
+
+        adapter.setOnItemClickListener(product -> {
+            Intent intent = new Intent(StockActivity.this, AddProductActivity.class);
+            intent.putExtra("STORE_ID", currentStoreId);
+            intent.putExtra("PRODUCT_TO_EDIT", product);
+            startActivity(intent);
+        });
+
         recyclerView.setAdapter(adapter);
     }
 
@@ -103,7 +112,7 @@ public class StockActivity extends AppCompatActivity {
                 List<Store> stores = result.data;
 
                 if (stores != null && !stores.isEmpty()) {
-                    currentStoreId = stores.get(0).getId();
+                    if(currentStoreId.isEmpty()) currentStoreId = stores.get(0).getId();
                     loadProducts(currentStoreId);
                 } else {
                     showLoading(false);
@@ -156,6 +165,7 @@ public class StockActivity extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 Intent intent = new Intent(StockActivity.this, MainActivity.class);
                 intent.putExtra("USER", currentUser);
+                if(!currentStoreId.isEmpty()) intent.putExtra("storeId", currentStoreId);
                 startActivity(intent);
                 return true;
 

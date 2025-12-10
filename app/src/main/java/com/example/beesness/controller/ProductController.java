@@ -54,25 +54,18 @@ public class ProductController {
         }
 
         if (image != null && !image.isEmpty()) {
-
-            // 1. Create a reference to Firebase Storage
-            // "product_images/" is the folder name in the cloud
-            String filename = UUID.randomUUID().toString(); // Random name (e.g., "abc-123-xyz")
+            String filename = UUID.randomUUID().toString();
             StorageReference storageRef = FirebaseStorage.getInstance().getReference()
                     .child("product_images/" + filename);
 
             Uri fileUri = Uri.parse(image);
 
-            // 2. Upload the file
             storageRef.putFile(fileUri)
                     .addOnSuccessListener(taskSnapshot -> {
-                        // 3. Upload Success! Now get the REAL link (https://...)
                         storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             String cloudUrl = uri.toString();
-
-                            // 4. Save Product with the Cloud URL
                             Product product = ProductFactory.create(storeId, name, buyPrice, sellPrice, description, cloudUrl, category.getName(), quantity);
-                            saveToFirestore(product, category.getCode(), callback);
+                            saveToFirestore(product, callback);
                         });
                     })
                     .addOnFailureListener(e -> {
@@ -80,9 +73,8 @@ public class ProductController {
                     });
 
         } else {
-            // No Image selected? Save with empty string
             Product product = ProductFactory.create(storeId, name, buyPrice, sellPrice, description, "", category.getName(), quantity);
-            saveToFirestore(product, category.getCode(), callback);
+            saveToFirestore(product, callback);
         }
     }
 
@@ -188,8 +180,8 @@ public class ProductController {
         });
     }
 
-    private void saveToFirestore(Product product, String categoryCode, OperationCallback<String> callback) {
-        repository.add(product, categoryCode, new FirestoreCallback<Product>() {
+    private void saveToFirestore(Product product, OperationCallback<String> callback) {
+        repository.add(product, new FirestoreCallback<Product>() {
             @Override
             public void onSuccess(Product result) {
                 callback.onResult(Result.success(result.getId(), "Product Added Successfully!"));

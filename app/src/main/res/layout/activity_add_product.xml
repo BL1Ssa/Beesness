@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New Product"
+            android:id="@+id/tvTitle"
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="#333"
