@@ -29,16 +29,12 @@ public class StoreRepository implements IStoreRepository {
         return instance;
     }
 
-    // Refactored: Removed 'Staff' parameter and removed the Transaction.
-    // Since we are only writing to 'stores' now, a transaction is unnecessary overhead.
     @Override
     public void createStore(Store store, FirestoreCallback<Store> callback) {
         DocumentReference newStoreDoc = storeRef.document();
 
-        // Set the ID into the object
         store.setId(newStoreDoc.getId());
 
-        // Write to 'stores' collection
         newStoreDoc.set(store)
                 .addOnSuccessListener(aVoid -> {
                     callback.onSuccess(store);

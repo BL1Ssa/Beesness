@@ -19,6 +19,7 @@ import com.example.beesness.controller.AuthController;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.OperationCallback;
 import com.example.beesness.utils.Result;
+import com.example.beesness.utils.SessionManager;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -94,10 +95,11 @@ public class SignupActivity extends AppCompatActivity {
 
                 case SUCCESS:
                     signupBtn.setEnabled(true);
+                    User newUser = result.data;
+                    SessionManager sessionManager = new SessionManager(SignupActivity.this);
+                    sessionManager.createLoginSession(newUser, true);
                     Toast.makeText(SignupActivity.this,"Account Created!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(SignupActivity.this, CreateStoreActivity.class);
-                    // Pass the User object so CreateStore knows who the owner is
-                    intent.putExtra("USER", result.data);
                     startActivity(intent);
                     finishAffinity(); // Clear back stack so they can't go back to signup
                     break;

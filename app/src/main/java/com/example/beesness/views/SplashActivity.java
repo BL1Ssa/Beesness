@@ -15,6 +15,7 @@ import com.example.beesness.models.Store;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.Result;
 import com.example.beesness.utils.OperationCallback;
+import com.example.beesness.utils.SessionManager;
 
 import java.util.List;
 
@@ -36,18 +37,18 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkSessionAndStore() {
-        // 1. Check if User is Logged In
-        authController.checkSession(result -> {
-            // FIX: Use .status == Result.Status.SUCCESS instead of instanceof
-            if (result.status == Result.Status.SUCCESS) {
-                User currentUser = result.data;
-                checkStoreState(currentUser);
+        SessionManager session = new SessionManager(this);
 
+        if (session.isLoggedIn()) {
+            if (session.isRemembered()) {
+                navigateToMain();
             } else {
-                // User is NOT logged in -> Send to Login
+                session.logout();
                 navigateToLogin();
             }
-        });
+        } else {
+            navigateToLogin();
+        }
     }
 
     private void checkStoreState(User user) {

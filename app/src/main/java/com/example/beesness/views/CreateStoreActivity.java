@@ -16,12 +16,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.beesness.R;
-import com.example.beesness.controller.StoreCategoryController; // Add this
+import com.example.beesness.controller.StoreCategoryController;
 import com.example.beesness.controller.StoreController;
 import com.example.beesness.models.StoreCategory;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.OperationCallback;
 import com.example.beesness.utils.Result;
+import com.example.beesness.utils.SessionManager;
 
 import java.util.List;
 
@@ -38,35 +39,45 @@ public class CreateStoreActivity extends AppCompatActivity {
     private User currentUser;
     private boolean hasStore;
     private String storeId;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_store);
 
+        sessionManager = new SessionManager(this);
+
+        if (checkUser()) return;
         initializeUserInputComponents();
         checkHasStore();
         initializeControllers();
-        if (checkUser()) return;
         loadCategories();
-        btnCreate.setOnClickListener(v -> handleCreateStore());
+
+        btnCreate.setOnClickListener(v -> {
+            currentUser = sessionManager.getUserDetail();
+            handleCreateStore();
+        });
     }
+
     private void checkHasStore() {
-        hasStore = getIntent().getBooleanExtra("hasStore", false);
-        if(hasStore){
+        String currentId = sessionManager.getCurrentStoreId();
+        hasStore = currentId != null && !currentId.isEmpty();
+
+        if (hasStore) {
             tvTitle.setText("Add Another Business");
             tvDesc.setText("Enter your store details below to add another store");
-            storeId = getIntent().getStringExtra("storeId");
+            storeId = currentId;
             initCancelBtn();
         }
     }
 
     private boolean checkUser() {
-        currentUser = (User) getIntent().getSerializableExtra("USER");
-
+        currentUser = sessionManager.getUserDetail();
         if (currentUser == null) {
             Toast.makeText(this, "Session Error: Please Login Again", Toast.LENGTH_LONG).show();
-            finish(); // Close activity
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
             return true;
         }
         return false;
@@ -86,20 +97,14 @@ public class CreateStoreActivity extends AppCompatActivity {
         spinnerCategory = findViewById(R.id.spinnerCategory);
         btnCreate = findViewById(R.id.btnCreateStore);
         progressBar = findViewById(R.id.progressBar);
+        btnCancel = findViewById(R.id.cancelButton);
     }
 
     private void initCancelBtn() {
-        btnCancel = findViewById(R.id.cancelButton);
         btnCancel.setEnabled(true);
         btnCancel.setVisibility(VISIBLE);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CreateStoreActivity.this, MainActivity.class);
-                intent.putExtra("USER", currentUser);
-                intent.putExtra("storeId", storeId);
-                startActivity(intent);
-            }
+        btnCancel.setOnClickListener(v -> {
+            finish();
         });
     }
 
@@ -111,7 +116,7 @@ public class CreateStoreActivity extends AppCompatActivity {
             public void onResult(Result<List<StoreCategory>> result) {
                 switch (result.status) {
                     case LOADING:
-                        Toast.makeText(CreateStoreActivity.this, "Loading...", Toast.LENGTH_SHORT).show();
+                        // Optional: Show loading state
                         break;
                     case SUCCESS:
                         List<StoreCategory> categories = result.data;
@@ -119,7 +124,6 @@ public class CreateStoreActivity extends AppCompatActivity {
                             Toast.makeText(CreateStoreActivity.this, "No categories found", Toast.LENGTH_SHORT).show();
                             return;
                         }
-
                         ArrayAdapter<StoreCategory> adapter = new ArrayAdapter<>(
                                 CreateStoreActivity.this,
                                 android.R.layout.simple_spinner_item,
@@ -144,6 +148,12 @@ public class CreateStoreActivity extends AppCompatActivity {
         String phone = etPhone.getText().toString().trim();
         StoreCategory selectedCategory = (StoreCategory) spinnerCategory.getSelectedItem();
 
+        // Basic Validation
+        if(name.isEmpty() || address.isEmpty() || phone.isEmpty()){
+            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         storeController.add(name, address, phone, "Rp.", selectedCategory, currentUser, new OperationCallback<String>() {
             @Override
             public void onResult(Result<String> result) {
@@ -155,10 +165,14 @@ public class CreateStoreActivity extends AppCompatActivity {
 
                     case SUCCESS:
                         progressBar.setVisibility(View.GONE);
+                        String newStoreId = result.data;
+
+                        sessionManager.saveCurrentStore(newStoreId);
+
                         Toast.makeText(CreateStoreActivity.this, "Store Created!", Toast.LENGTH_SHORT).show();
+
                         Intent intent = new Intent(CreateStoreActivity.this, MainActivity.class);
-                        intent.putExtra("USER", currentUser);
-                        intent.putExtra("storeId", result.data);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
                         break;

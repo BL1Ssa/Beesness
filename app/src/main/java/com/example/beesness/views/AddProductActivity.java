@@ -22,6 +22,7 @@ import com.example.beesness.controller.ProductController;
 import com.example.beesness.models.Product;
 import com.example.beesness.models.ProductCategory;
 import com.example.beesness.utils.Result;
+import com.example.beesness.utils.SessionManager;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class AddProductActivity extends AppCompatActivity {
     // === EDIT MODE VARIABLES ===
     private Product productToEdit;
     private boolean isEditMode = false;
+    private SessionManager sessionManager;
 
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -59,9 +61,11 @@ public class AddProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
 
+        sessionManager = new SessionManager(this);
+        storeId = sessionManager.getCurrentStoreId();
+
         productController = new ProductController();
 
-        storeId = getIntent().getStringExtra("STORE_ID");
         if (getIntent().hasExtra("PRODUCT_TO_EDIT")) {
             productToEdit = (Product) getIntent().getSerializableExtra("PRODUCT_TO_EDIT");
             isEditMode = true;
