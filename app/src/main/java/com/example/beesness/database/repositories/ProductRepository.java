@@ -1,15 +1,12 @@
 package com.example.beesness.database.repositories;
 import com.example.beesness.database.interfaces.IProductRepository;
 import com.example.beesness.models.Product;
-import com.example.beesness.utils.CounterData;
 import com.example.beesness.utils.FirestoreCallback;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
-import java.util.Locale;
 
 public class ProductRepository implements IProductRepository {
 
@@ -29,55 +26,28 @@ public class ProductRepository implements IProductRepository {
         return instance;
     }
 
-    //custom add with id assignment generator
     @Override
-    public void add(Product product, String categoryCode, FirestoreCallback<Product> callback) {
+    public void add(Product product, FirestoreCallback<Product> callback) {
+        DocumentReference newDocRef = productRef.document();
+        product.setId(newDocRef.getId());
 
-        String prefix = categoryCode.trim().toUpperCase(Locale.ROOT);
-
-        DocumentReference counterRef = db.collection("counters").document(prefix);
-
-        // 3. Run Atomic Transaction
-        db.runTransaction(transaction -> {
-
-            DocumentSnapshot snapshot = transaction.get(counterRef);
-            long nextCount = 1;
-
-            if (snapshot.exists()) {
-                Long current = snapshot.getLong("count");
-                if (current != null) {
-                    nextCount = current + 1;
-                }
-            }
-
-            String customId = prefix + String.format(Locale.US, "%03d", nextCount);
-
-            product.setId(customId);
-
-            transaction.set(counterRef, new CounterData(nextCount));
-            transaction.set(productRef.document(customId), product);
-
-            return product;
-
-        }).addOnSuccessListener(resultProduct -> {
-            callback.onSuccess(resultProduct);
-        }).addOnFailureListener(e -> {
-            callback.onFailure(e);
-        });
-    }
-
-    @Override
-    public void add(Product item, FirestoreCallback<Product> callback) {
-        callback.onFailure(new Exception("DO NOT USE THIS. Use add(product, categoryCode) instead."));
-        productRef.add(item).addOnSuccessListener(doc -> {
-            item.setId(doc.getId());
-            callback.onSuccess(item);
-        }).addOnFailureListener(callback::onFailure);
+        newDocRef.set(product)
+                .addOnSuccessListener(aVoid -> {
+                    callback.onSuccess(product);
+                }).addOnFailureListener(callback::onFailure);
     }
 
     @Override
     public void getAll(FirestoreCallback<List<Product>> callback) {
+        //not recommended to use this at all :v
         productRef.get().addOnSuccessListener(qs ->
+                callback.onSuccess(qs.toObjects(Product.class))
+        ).addOnFailureListener(callback::onFailure);
+    }
+
+    @Override
+    public void getAllByStoreId(String storeId, FirestoreCallback<List<Product>> callback) {
+        productRef.whereEqualTo("storeId", storeId).get().addOnSuccessListener(qs ->
                 callback.onSuccess(qs.toObjects(Product.class))
         ).addOnFailureListener(callback::onFailure);
     }

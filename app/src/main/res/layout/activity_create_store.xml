@@ -24,6 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Setup Your Business"
+            android:id="@+id/tvTitleCreateStore"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -33,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Enter your store details below to get started."
+            android:id="@+id/tvDescCreateStore"
             android:textSize="14sp"
             android:textColor="@color/gray_text"
             android:layout_gravity="center_horizontal"
@@ -136,6 +138,18 @@
                     app:cornerRadius="12dp"
                     android:backgroundTint="@color/honey_primary"
                     app:rippleColor="#FFFFFF"/>
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="16dp"
+                    app:cornerRadius="12dp"
+                    android:text="Cancel"
+                    android:visibility="gone"
+                    android:enabled="false"
+                    android:id="@+id/cancelButton"
+                    android:backgroundTint="@color/cardview_dark_background"/>
 
                 <!-- Loading Indicator (Hidden) -->
                 <ProgressBar

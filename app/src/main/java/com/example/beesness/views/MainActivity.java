@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     // UI Components
     private Spinner spinnerStore;
+    private String storeId;
     private TextView tvTotalRevenue, tvTotalExpense;
     private BottomNavigationView bottomNav;
     // Removed FloatingActionButton
@@ -34,12 +37,12 @@ public class MainActivity extends AppCompatActivity {
     private StoreController storeController;
     private User currentUser;
     private List<Store> userStores = new ArrayList<>();
+    private ImageButton addStoreBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // 1. Get User from Intent
         currentUser = (User) getIntent().getSerializableExtra("USER");
 
@@ -49,13 +52,15 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // 2. Initialize
+
         storeController = new StoreController();
+        loadUserStores();
         initViews();
 
-        // 3. Load Data
-        loadUserStores();
         setupNavigation();
+
+        if(getIntent().getStringExtra("storeId") != null) storeId = getIntent().getStringExtra("storeId");
+        if(storeId == null) storeId = userStores.get(0).getId();
     }
 
     private void initViews() {
@@ -63,6 +68,21 @@ public class MainActivity extends AppCompatActivity {
         tvTotalRevenue = findViewById(R.id.tvTotalRevenue);
         tvTotalExpense = findViewById(R.id.tvTotalExpense);
         bottomNav = findViewById(R.id.bottom_navigation);
+        addStoreBtn = findViewById(R.id.addStoreButton);
+        initBtn();
+    }
+
+    private void initBtn(){
+        addStoreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CreateStoreActivity.class);
+                intent.putExtra("USER", currentUser);
+                intent.putExtra("hasStore", true);
+                if(!storeId.isEmpty()) intent.putExtra("storeId", storeId);
+                startActivity(intent);
+            }
+        });
     }
 
     // --- LOGIC: Load Stores owned by this User ---
@@ -91,23 +111,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupStoreSpinner() {
+        int index = -1;
         List<String> storeNames = new ArrayList<>();
         for (Store s : userStores) {
+            if(!storeId.isEmpty() && storeId.equals(s.getId())){
+                index = userStores.indexOf(s);
+            }
             storeNames.add(s.getName());
         }
+
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, storeNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerStore.setAdapter(adapter);
 
+        if(index != -1) spinnerStore.setSelection(index);
+
         spinnerStore.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 loadDashboardData(userStores.get(position));
+                storeId = userStores.get(position).getId();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+                storeId = userStores.get(0).getId();
+            }
         });
     }
 
@@ -116,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
         tvTotalExpense.setText(store.getCurrency() + " 0");
     }
 
-    // --- UPDATED NAVIGATION ---
     private void setupNavigation() {
         // Highlight "Home" by default
         bottomNav.setSelectedItemId(R.id.nav_home);
@@ -139,7 +168,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             } else if (id == R.id.nav_stock) {
-                Toast.makeText(this, "Opening Stock...", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, StockActivity.class);
+                intent.putExtra("USER", currentUser);
+                intent.putExtra("storeId", storeId);
+                startActivity(intent);
                 return true;
 
             } else if (id == R.id.nav_profile) {

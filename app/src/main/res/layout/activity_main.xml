@@ -5,6 +5,19 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+    <TextView
+        android:id="@+id/headerTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:text="My Dashboard"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:layout_alignParentTop="true"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -19,29 +32,34 @@
     <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@id/bottom_navigation"
-    android:fillViewport="true">
+        android:layout_below="@+id/headerTitle"
+        android:fillViewport="true">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="My Dashboard"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:orientation="horizontal">
+            <Spinner
+                android:id="@+id/spinnerStoreSelector"
+                android:layout_width="120dp"
+                android:layout_marginRight="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_spinner_rounded"
+                android:minHeight="48dp" />
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_input_add"
+                android:id="@+id/addStoreButton"
+                android:background="@drawable/round_image_button"
+                android:elevation="4dp"/>
+        </LinearLayout>
 
-        <Spinner
-            android:id="@+id/spinnerStoreSelector"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_spinner_rounded"
-            android:minHeight="48dp" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -251,7 +269,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Expenses"
+                            android:text="Online Orders"
                             android:textSize="16sp"
                             android:textStyle="bold"/>
                         <TextView
