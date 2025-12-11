@@ -28,6 +28,18 @@
         app:itemTextColor="@color/white"
         app:menu="@menu/bottom_nav_menu" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/btnProcurement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_above="@id/bottom_navigation"
+        android:text="Restock"
+        android:backgroundTint="@color/green_growth"
+        android:textColor="@color/white"
+        app:icon="@android:drawable/ic_menu_add"
+        app:iconTint="@color/white" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvProducts"
         android:layout_width="match_parent"

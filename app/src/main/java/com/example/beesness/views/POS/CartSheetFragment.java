@@ -1,4 +1,4 @@
-package com.example.beesness.views;
+package com.example.beesness.views.POS;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

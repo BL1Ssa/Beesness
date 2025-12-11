@@ -16,7 +16,6 @@ import com.example.beesness.models.Product;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.Result;
 import com.example.beesness.utils.SessionManager;
-import com.example.beesness.views.CartSheetFragment;
 import com.example.beesness.views.adapters.ProductAdapter;
 import com.example.beesness.views.facade.SetupNavigationFacade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

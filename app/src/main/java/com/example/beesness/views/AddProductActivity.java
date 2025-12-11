@@ -102,6 +102,7 @@ public class AddProductActivity extends AppCompatActivity {
         btnSave.setText("Update Product");
         tvStock = findViewById(R.id.tvStock);
         tvStock.setText("Current Stock");
+        etStock.setEnabled(false);
 
         // Fill Fields
         etName.setText(productToEdit.getName());

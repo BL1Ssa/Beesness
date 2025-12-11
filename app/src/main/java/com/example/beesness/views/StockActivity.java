@@ -21,6 +21,7 @@ import com.example.beesness.utils.Result;
 import com.example.beesness.utils.SessionManager;
 import com.example.beesness.views.adapters.ProductAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.beesness.views.facade.SetupNavigationFacade;
 
@@ -33,6 +34,7 @@ public class StockActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView emptyStateText;
     private FloatingActionButton fabAdd;
+    private ExtendedFloatingActionButton btnProcurement;
 
     private ProductController productController;
     private StoreController storeController;
@@ -86,6 +88,7 @@ public class StockActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         emptyStateText = findViewById(R.id.tvEmptyState);
         fabAdd = findViewById(R.id.fabAddProduct);
+        btnProcurement = findViewById(R.id.btnProcurement);
 
         fabAdd.setOnClickListener(v -> {
             if (currentStoreId != null) {
@@ -93,6 +96,15 @@ public class StockActivity extends AppCompatActivity {
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Please wait, loading store info...", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnProcurement.setOnClickListener(v -> {
+            if (currentStoreId != null) {
+                Intent intent = new Intent(StockActivity.this, ProcurementActivity.class);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Store not loaded yet", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -165,11 +177,9 @@ public class StockActivity extends AppCompatActivity {
     }
 
     private void setupNavigation(){
-
-        //SetupNavigation logic is on Facade
         SetupNavigationFacade navFacade = new SetupNavigationFacade(this,bottomNav);
         navFacade.setupNavigation(R.id.nav_stock);
-        }
     }
+}
 
 

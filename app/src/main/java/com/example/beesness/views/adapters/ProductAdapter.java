@@ -20,6 +20,12 @@ import java.util.Locale;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
     public List<Product> productList = new ArrayList<>();
+    private boolean isProcurementMode = false;
+
+    public void setProcurementMode(boolean b) {
+        isProcurementMode = b;
+        notifyDataSetChanged();
+    }
 
     public interface OnItemClickListener {
         void onItemClick(Product product);
@@ -54,8 +60,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         Locale localeID = new Locale("id", "ID");
         NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
 
-        holder.priceTv.setText(formatRupiah.format(product.getSellPrice()));
-        holder.stockTv.setText("Qty: " + product.getQuantity());
+        if (isProcurementMode) {
+            holder.priceTv.setText(formatRupiah.format(product.getBuyPrice()));
+            holder.priceTv.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.orange_sales_line)); // Optional: visual cue
+        } else {
+            holder.priceTv.setText(formatRupiah.format(product.getSellPrice()));
+            holder.priceTv.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.green_growth));
+        }
         if(product.getQuantity() == 0){
             holder.stockTv.setText("Out of Stock");
         }
