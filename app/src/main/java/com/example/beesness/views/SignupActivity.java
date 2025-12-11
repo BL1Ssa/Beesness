@@ -101,7 +101,7 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(SignupActivity.this,"Account Created!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(SignupActivity.this, CreateStoreActivity.class);
                     startActivity(intent);
-                    finishAffinity(); // Clear back stack so they can't go back to signup
+                    finishAffinity();
                     break;
 
                 case ERROR:

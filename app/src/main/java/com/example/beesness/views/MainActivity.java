@@ -19,6 +19,7 @@ import com.example.beesness.models.User;
 import com.example.beesness.utils.OperationCallback;
 import com.example.beesness.utils.Result;
 import com.example.beesness.utils.SessionManager; // <--- IMPORT THIS
+import com.example.beesness.views.facade.SetupNavigationFacade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -153,35 +154,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNavigation() {
-        // Highlight "Home" by default
-        bottomNav.setSelectedItemId(R.id.nav_home);
-
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.nav_home) {
-                return true;
-
-            } else if (id == R.id.nav_transaction) {
-                Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
-                startActivity(intent);
-                return true;
-
-            } else if (id == R.id.nav_cart) {
-                Intent intent = new Intent(MainActivity.this, POSActivity.class);
-                startActivity(intent);
-                return true;
-
-            } else if (id == R.id.nav_stock) {
-                Intent intent = new Intent(MainActivity.this, StockActivity.class);
-                startActivity(intent);
-                return true;
-
-            } else if (id == R.id.nav_profile) {
-                return true;
-            }
-            return false;
-        });
+        SetupNavigationFacade navFacade = new SetupNavigationFacade(this, bottomNav);
+        navFacade.setupNavigation(R.id.nav_home);
     }
 
     private void redirectToLogin() {

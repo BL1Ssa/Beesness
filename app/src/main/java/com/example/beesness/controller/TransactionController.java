@@ -1,6 +1,5 @@
 package com.example.beesness.controller;
 
-import com.example.beesness.R;
 import com.example.beesness.database.repositories.ProductRepository;
 import com.example.beesness.database.repositories.TransactionRepository;
 import com.example.beesness.factories.TransactionFactory;
@@ -9,7 +8,6 @@ import com.example.beesness.models.Transaction;
 import com.example.beesness.utils.FirestoreCallback;
 import com.example.beesness.utils.OperationCallback;
 import com.example.beesness.utils.Result;
-import com.example.beesness.utils.SessionManager;
 
 import java.util.List;
 
@@ -39,10 +37,10 @@ public class TransactionController {
         transactionRepo.add(transaction, new FirestoreCallback<Transaction>() {
             @Override
             public void onSuccess(Transaction result) {
-                for (Product p : cartItems) {
-                    decreaseStock(p.getId(), p.getQuantity());
-                }
-                callback.onResult(Result.success(transaction.getId(), "Transaction Complete!"));
+                // FIXED: We now wait for stock updates to finish before calling success
+                processStockUpdates(0, cartItems, () -> {
+                    callback.onResult(Result.success(transaction.getId(), "Transaction Complete!"));
+                });
             }
 
             @Override
@@ -52,19 +50,36 @@ public class TransactionController {
         });
     }
 
-    private void decreaseStock(String productId, int quantitySold) {
+    // Helper to process updates sequentially
+    private void processStockUpdates(int index, List<Product> items, Runnable onComplete) {
+        if (index >= items.size()) {
+            onComplete.run(); // All items processed
+            return;
+        }
+
+        Product itemToUpdate = items.get(index);
+
+        // Update this item, then recursively call for the next one
+        decreaseStockWithCallback(itemToUpdate.getId(), itemToUpdate.getQuantity(), () -> {
+            processStockUpdates(index + 1, items, onComplete);
+        });
+    }
+
+    private void decreaseStockWithCallback(String productId, int quantitySold, Runnable onStepComplete) {
         productController.getById(productId, result -> {
             if (result.status == Result.Status.SUCCESS && result.data != null) {
                 Product p = result.data;
 
                 int newQuantity = p.getQuantity() - quantitySold;
-                if (newQuantity < 0) newQuantity = 0; // Safety check
+                if (newQuantity < 0) newQuantity = 0;
 
                 productController.updateStock(productId, newQuantity, updateResult -> {
-                    if (updateResult.status == Result.Status.ERROR) {
-                        System.err.println("Failed to update stock: " + updateResult.message);
-                    }
+                    // Proceed to next item regardless of individual success/fail to prevent hanging
+                    onStepComplete.run();
                 });
+            } else {
+                // Product not found, skip
+                onStepComplete.run();
             }
         });
     }

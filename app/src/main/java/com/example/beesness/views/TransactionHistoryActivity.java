@@ -18,6 +18,7 @@ import com.example.beesness.models.Transaction;
 import com.example.beesness.utils.FirestoreCallback;
 import com.example.beesness.utils.SessionManager;
 import com.example.beesness.views.adapters.TransactionAdapter;
+import com.example.beesness.views.facade.SetupNavigationFacade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -115,35 +116,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     }
 
     private void setupNavigation() {
-        // Highlight "Home" by default
-        bottomNav.setSelectedItemId(R.id.nav_transaction);
-
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.nav_home) {
-                Intent intent = new Intent(TransactionHistoryActivity.this, MainActivity.class);
-                startActivity(intent);
-                return true;
-
-            } else if (id == R.id.nav_transaction) {
-                return true;
-
-            } else if (id == R.id.nav_cart) {
-                Intent intent = new Intent(TransactionHistoryActivity.this, POSActivity.class);
-                startActivity(intent);
-                return true;
-
-            } else if (id == R.id.nav_stock) {
-                Intent intent = new Intent(TransactionHistoryActivity.this, StockActivity.class);
-                startActivity(intent);
-                return true;
-
-            } else if (id == R.id.nav_profile) {
-                Toast.makeText(this, "Opening Profile...", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            return false;
-        });
+        SetupNavigationFacade navFacade = new SetupNavigationFacade(this, bottomNav);
+        navFacade.setupNavigation(R.id.nav_home);
     }
 }
