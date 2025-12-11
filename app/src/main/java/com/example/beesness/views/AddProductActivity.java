@@ -30,6 +30,7 @@ import java.util.List;
 
 public class AddProductActivity extends AppCompatActivity {
 
+    private TextView tvStock;
     private EditText etName, etBuyPrice, etSellPrice, etStock, etDesc;
     private Spinner spinnerCategory;
     private ImageView ivProductImage;
@@ -99,6 +100,8 @@ public class AddProductActivity extends AppCompatActivity {
         TextView title = findViewById(R.id.tvTitle);
         if(title != null) title.setText("Edit Product");
         btnSave.setText("Update Product");
+        tvStock = findViewById(R.id.tvStock);
+        tvStock.setText("Current Stock");
 
         // Fill Fields
         etName.setText(productToEdit.getName());
