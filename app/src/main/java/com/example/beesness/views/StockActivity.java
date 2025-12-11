@@ -22,6 +22,7 @@ import com.example.beesness.utils.SessionManager;
 import com.example.beesness.views.adapters.ProductAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.beesness.facade.SetupNavigationFacade;
 
 import java.util.List;
 
@@ -132,7 +133,6 @@ public class StockActivity extends AppCompatActivity {
             }
         });
     }
-
     private void loadProducts(String storeId) {
         productController.getAll(storeId, result -> {
             showLoading(false);
@@ -164,33 +164,12 @@ public class StockActivity extends AppCompatActivity {
         }
     }
 
-    private void setupNavigation() {
-        bottomNav.setSelectedItemId(R.id.nav_stock);
+    private void setupNavigation(){
 
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.nav_home) {
-                startActivity(new Intent(this, MainActivity.class));
-                return true;
-            } else if (id == R.id.nav_transaction) {
-                Intent intent = new Intent(StockActivity.this, TransactionHistoryActivity.class);
-                startActivity(intent);
-                return true;
-
-            } else if (id == R.id.nav_cart) {
-                Intent intent = new Intent(StockActivity.this, POSActivity.class);
-                startActivity(intent);
-                return true;
-
-            } else if (id == R.id.nav_stock) {
-                return true;
-
-            } else if (id == R.id.nav_profile) {
-                Toast.makeText(this, "Opening Profile...", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            return false;
-        });
+        //SetupNavigation logic is on Facade
+        SetupNavigationFacade navFacade = new SetupNavigationFacade(this,bottomNav);
+        navFacade.setupNavigation(R.id.nav_stock);
+        }
     }
-}
+
+
