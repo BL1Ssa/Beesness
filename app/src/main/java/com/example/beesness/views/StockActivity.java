@@ -22,7 +22,7 @@ import com.example.beesness.utils.SessionManager;
 import com.example.beesness.views.adapters.ProductAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.example.beesness.facade.SetupNavigationFacade;
+import com.example.beesness.views.facade.SetupNavigationFacade;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.beesness.facade;
+package com.example.beesness.views.facade;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -65,9 +65,6 @@ public class SetupNavigationFacade {
 
     private void startActivity(Class<?> targetActivity) {
         Intent intent = new Intent(activity, targetActivity);
-        // Optional: Add flags here if you want to clear back stack or singleTop
-        // intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         activity.startActivity(intent);
-        // Optional: activity.overridePendingTransition(0, 0); // Remove animation if desired
     }
 }
