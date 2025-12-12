@@ -1,4 +1,4 @@
-package com.example.beesness.facade;
+package com.example.beesness.views.facade;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.example.beesness.R;
 import com.example.beesness.views.MainActivity;
 import com.example.beesness.views.POSActivity;
+import com.example.beesness.views.ProfileActivity;
 import com.example.beesness.views.StockActivity;
 import com.example.beesness.views.TransactionHistoryActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -55,7 +56,7 @@ public class SetupNavigationFacade {
                 return true;
 
             } else if (id == R.id.nav_profile) {
-                Toast.makeText(activity, "Opening Profile...", Toast.LENGTH_SHORT).show();
+                startActivity(ProfileActivity.class);
                 return true;
             }
 
@@ -65,9 +66,6 @@ public class SetupNavigationFacade {
 
     private void startActivity(Class<?> targetActivity) {
         Intent intent = new Intent(activity, targetActivity);
-        // Optional: Add flags here if you want to clear back stack or singleTop
-        // intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         activity.startActivity(intent);
-        // Optional: activity.overridePendingTransition(0, 0); // Remove animation if desired
     }
 }

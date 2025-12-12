@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.beesness" />
+                  <option name="mobileSdkAppId" value="1:17834509226:android:573dc7e9d37aff84a6a1d3" />
+                  <option name="projectId" value="beesness-binus" />
+                  <option name="projectNumber" value="17834509226" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
