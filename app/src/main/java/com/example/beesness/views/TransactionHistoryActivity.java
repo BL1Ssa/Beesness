@@ -115,10 +115,8 @@ public class TransactionHistoryActivity extends AppCompatActivity {
 
     }
 
-    private void setupNavigation(){
-
-        //SetupNavigation logic is on Facade
-        SetupNavigationFacade navFacade = new SetupNavigationFacade(this,bottomNav);
-        navFacade.setupNavigation(R.id.nav_transaction);
+    private void setupNavigation() {
+        SetupNavigationFacade navFacade = new SetupNavigationFacade(this, bottomNav);
+        navFacade.setupNavigation(R.id.nav_home);
     }
 }

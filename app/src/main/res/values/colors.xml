@@ -17,4 +17,5 @@
     <color name="bggray">#F5F5F5</color>
     <color name="cancelgray">#E0E0E0</color>
     <color name="gray_underline">#E0E0E0</color>
+    <color name="lightBlue">#2196F3</color>
 </resources>

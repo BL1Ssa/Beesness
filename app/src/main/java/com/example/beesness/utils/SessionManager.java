@@ -29,7 +29,6 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    // UPDATED: Now accepts 'isRemembered' boolean
     public void createLoginSession(User user, boolean isRemembered) {
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
         editor.putBoolean(KEY_REMEMBER_ME, isRemembered); // <--- SAVE IT

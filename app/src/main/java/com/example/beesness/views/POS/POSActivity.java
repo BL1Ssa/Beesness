@@ -1,8 +1,9 @@
-package com.example.beesness.views;
+package com.example.beesness.views.POS;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,12 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class POSActivity extends AppCompatActivity {
+// 1. ADDED: Implements interface
+public class POSActivity extends AppCompatActivity implements CartSheetFragment.CartUpdateListener {
 
     private RecyclerView recyclerView;
     private ProductAdapter adapter;
     private TextView tvTotal;
     private Button btnCheckout;
+    private LinearLayout checkoutLayout; // 2. ADDED: Reference to the clickable total area
 
     private ProductController productController;
     private TransactionController transactionController;
@@ -48,7 +51,6 @@ public class POSActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pos);
 
         sessionManager = new SessionManager(this);
-        // Setup Controllers
         productController = new ProductController();
         transactionController = new TransactionController();
 
@@ -64,6 +66,11 @@ public class POSActivity extends AppCompatActivity {
     private void initViews() {
         tvTotal = findViewById(R.id.tvTotalAmount);
         btnCheckout = findViewById(R.id.btnCheckout);
+
+
+        checkoutLayout = findViewById(R.id.checkoutLayout);
+        checkoutLayout.setOnClickListener(v -> openCartEditor());
+
         recyclerView = findViewById(R.id.rvPosProducts);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         bottomNav = findViewById(R.id.bottom_navigation);
@@ -71,7 +78,6 @@ public class POSActivity extends AppCompatActivity {
 
         adapter = new ProductAdapter();
 
-        // CLICK LISTENER: ADD TO CART
         adapter.setOnItemClickListener(product -> {
             addToCart(product);
         });
@@ -79,33 +85,80 @@ public class POSActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private void addToCart(Product originalProduct) {
-        // Logic: Create a copy or wrapper so we don't mess up the original list
-        // For simplicity: We will just track "Cart Items" in a list
+    // 4. ADDED: Logic to open the fragment
+    private void openCartEditor() {
+        if (cartList.isEmpty()) {
+            Toast.makeText(this, "Cart is empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Pass the live cartList to the fragment
+        CartSheetFragment fragment = new CartSheetFragment(cartList, this);
+        fragment.show(getSupportFragmentManager(), "CartEdit");
+    }
 
-        // Check if enough stock
+    // 5. ADDED: Callback from the fragment when user adds/removes items
+    @Override
+    public void onCartUpdated() {
+        updateTotalUI();
+        // Optional: If you want to refresh the main product list stock numbers
+        // when items are removed from cart, you could call loadProducts(storeId) here.
+    }
+
+    @Override
+    public void onStockRestored(String productId, int quantityRestored) {
+        if (adapter != null && adapter.productList != null) {
+            for (Product p : adapter.productList) {
+                if (p.getId().equals(productId)) {
+
+                    int newStock = p.getQuantity() + quantityRestored;
+                    p.setQuantity(newStock);
+
+                    adapter.notifyDataSetChanged();
+                    return;
+                }
+            }
+        }
+    }
+
+    private void addToCart(Product originalProduct) {
         if (originalProduct.getQuantity() <= 0) {
             Toast.makeText(this, "Out of Stock!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Add to calculation
-        currentTotal += originalProduct.getSellPrice();
+        originalProduct.setQuantity(originalProduct.getQuantity() - 1);
+        adapter.notifyDataSetChanged();
+
+        boolean found = false;
+        for (Product cartItem : cartList) {
+            if (cartItem.getId().equals(originalProduct.getId())) {
+                cartItem.setQuantity(cartItem.getQuantity() + 1);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            Product cartItem = new Product();
+            cartItem.setId(originalProduct.getId());
+            cartItem.setName(originalProduct.getName());
+            cartItem.setSellPrice(originalProduct.getSellPrice());
+            cartItem.setBuyPrice(originalProduct.getBuyPrice());
+            cartItem.setStoreId(originalProduct.getStoreId());
+            cartItem.setQuantity(1);
+
+            cartList.add(cartItem);
+        }
+
         updateTotalUI();
-
-        // Add to our internal cart list
-        // Note: In a real app, you'd check if item exists and increment qty.
-        // Here, we just add a "Product" object representing 1 unit sold.
-        Product cartItem = new Product();
-        cartItem.setId(originalProduct.getId()); // IMPORTANT: Keep ID
-        cartItem.setName(originalProduct.getName());
-        cartItem.setQuantity(1); // Sold 1
-
-        cartList.add(cartItem);
-        Toast.makeText(this, "Added " + originalProduct.getName(), Toast.LENGTH_SHORT).show();
     }
 
     private void updateTotalUI() {
+        currentTotal = 0;
+        for (Product p : cartList) {
+            currentTotal += (p.getSellPrice() * p.getQuantity());
+        }
+
         Locale localeID = new Locale("id", "ID");
         NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
         tvTotal.setText(formatRupiah.format(currentTotal));
@@ -120,11 +173,11 @@ public class POSActivity extends AppCompatActivity {
         transactionController.processCheckout(cartList, storeId, currentTotal, result -> {
             if (result.status == Result.Status.SUCCESS) {
                 Toast.makeText(this, "Transaction Success!", Toast.LENGTH_LONG).show();
-                // Clear Cart
+
                 cartList.clear();
                 currentTotal = 0;
                 updateTotalUI();
-                // Ideally refresh the product list here to show new stock
+
             } else if (result.status == Result.Status.ERROR) {
                 Toast.makeText(this, "Failed: " + result.message, Toast.LENGTH_SHORT).show();
             }
@@ -132,7 +185,6 @@ public class POSActivity extends AppCompatActivity {
     }
 
     private void loadProducts(String storeId) {
-        // ... (Copy load logic from StockActivity) ...
         productController.getAll(storeId, result -> {
             if (result.status == Result.Status.SUCCESS) {
                 adapter.setProducts(result.data);
@@ -140,9 +192,13 @@ public class POSActivity extends AppCompatActivity {
         });
     }
 
-    private void setupNavigation(){
-        //SetupNavigation logic is on Facade
-        SetupNavigationFacade navFacade = new SetupNavigationFacade(this,bottomNav);
+    private void setupNavigation() {
+        SetupNavigationFacade navFacade = new SetupNavigationFacade(this, bottomNav);
         navFacade.setupNavigation(R.id.nav_cart);
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
     }
 }

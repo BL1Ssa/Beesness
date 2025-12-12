@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.example.beesness.R;
 import com.example.beesness.views.MainActivity;
-import com.example.beesness.views.POSActivity;
+import com.example.beesness.views.POS.POSActivity;
 import com.example.beesness.views.ProfileActivity;
 import com.example.beesness.views.StockActivity;
 import com.example.beesness.views.TransactionHistoryActivity;
