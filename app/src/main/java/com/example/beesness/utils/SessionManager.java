@@ -1,8 +1,12 @@
 package com.example.beesness.utils;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import com.example.beesness.models.User;
+import com.example.beesness.views.LoginActivity;
 
 public class SessionManager {
 
@@ -12,6 +16,7 @@ public class SessionManager {
     private static final String KEY_USER_ID = "userId";
     private static final String KEY_USER_NAME = "userName";
     private static final String KEY_USER_EMAIL = "userEmail";
+    private static final String KEY_USER_PHONENUM = "userPhonenum";
     private static final String KEY_CURRENT_STORE_ID = "currentStoreId";
 
     private SharedPreferences pref;
@@ -31,6 +36,7 @@ public class SessionManager {
         editor.putString(KEY_USER_ID, user.getId());
         editor.putString(KEY_USER_NAME, user.getName());
         editor.putString(KEY_USER_EMAIL, user.getEmail());
+        editor.putString(KEY_USER_PHONENUM, user.getPhonenum());
         editor.commit();
     }
 
@@ -45,6 +51,7 @@ public class SessionManager {
         user.setId(pref.getString(KEY_USER_ID, null));
         user.setName(pref.getString(KEY_USER_NAME, null));
         user.setEmail(pref.getString(KEY_USER_EMAIL, null));
+        user.setPhonenum(pref.getString(KEY_USER_PHONENUM, null));
         return user;
     }
 
@@ -64,5 +71,7 @@ public class SessionManager {
     public void logout() {
         editor.clear();
         editor.commit();
+        Intent intent = new Intent(context, LoginActivity.class);
+        startActivity(context, intent, null);
     }
 }

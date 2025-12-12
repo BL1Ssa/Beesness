@@ -27,11 +27,13 @@ public class SetupNavigationFacade {
      * @param currentMenuId The R.id of the menu item that represents the current screen.
      */
     public void setupNavigation(int currentMenuId) {
+        // Set the highlighted item
         bottomNavigationView.setSelectedItemId(currentMenuId);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
 
+            // If the user clicks the tab they are already on, do nothing
             if (id == currentMenuId) {
                 return true;
             }
@@ -64,6 +66,5 @@ public class SetupNavigationFacade {
     private void startActivity(Class<?> targetActivity) {
         Intent intent = new Intent(activity, targetActivity);
         activity.startActivity(intent);
-//         Optional: activity.overridePendingTransition(0, 0); // Remove animation if desired
     }
 }

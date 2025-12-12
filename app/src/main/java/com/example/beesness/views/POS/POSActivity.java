@@ -1,8 +1,9 @@
-package com.example.beesness.views.POS; // Kept your package name
+package com.example.beesness.views.POS;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.LinearLayout; // Import added
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,6 +67,7 @@ public class POSActivity extends AppCompatActivity implements CartSheetFragment.
         tvTotal = findViewById(R.id.tvTotalAmount);
         btnCheckout = findViewById(R.id.btnCheckout);
 
+
         checkoutLayout = findViewById(R.id.checkoutLayout);
         checkoutLayout.setOnClickListener(v -> openCartEditor());
 
@@ -119,21 +121,17 @@ public class POSActivity extends AppCompatActivity implements CartSheetFragment.
     }
 
     private void addToCart(Product originalProduct) {
-        // 1. Check stock
         if (originalProduct.getQuantity() <= 0) {
             Toast.makeText(this, "Out of Stock!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // 2. VISUAL UPDATE: Decrement immediately so user sees it
         originalProduct.setQuantity(originalProduct.getQuantity() - 1);
         adapter.notifyDataSetChanged();
 
-        // 3. Add to Cart Logic
         boolean found = false;
         for (Product cartItem : cartList) {
             if (cartItem.getId().equals(originalProduct.getId())) {
-                // We just increment the cart count
                 cartItem.setQuantity(cartItem.getQuantity() + 1);
                 found = true;
                 break;
