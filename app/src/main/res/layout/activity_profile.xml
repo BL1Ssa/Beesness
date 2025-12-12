@@ -108,6 +108,20 @@
     </androidx.cardview.widget.CardView>
 
     <Button
+        android:id="@+id/btnEditProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btnLogout"
+        android:layout_alignParentBottom="@+id/btnLogout"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="-52dp"
+        android:layout_marginBottom="130dp"
+        android:backgroundTint="@color/orange_sales_line"
+        android:text="Edit Profile"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <Button
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -118,6 +132,8 @@
         android:layout_marginBottom="130dp"
         android:textStyle="bold"
         android:layout_marginHorizontal="20dp"/>
+
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
