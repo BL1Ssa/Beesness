@@ -70,6 +70,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         if(product.getQuantity() == 0){
             holder.stockTv.setText("Out of Stock");
         }
+        holder.stockTv.setText("Qty: " + product.getQuantity());
 
         if (holder.productImageView == null) return;
 

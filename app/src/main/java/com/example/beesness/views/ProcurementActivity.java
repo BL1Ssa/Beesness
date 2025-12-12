@@ -177,7 +177,7 @@ public class ProcurementActivity extends AppCompatActivity implements CartSheetF
                 procurementList.clear();
                 updateUI();
                 loadProducts(); // Refresh to see updated stock numbers
-            } else {
+            } else if (result.status == Result.Status.ERROR){
                 Toast.makeText(this, "Error: " + result.message, Toast.LENGTH_SHORT).show();
             }
         });
