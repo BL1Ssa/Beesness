@@ -23,7 +23,7 @@
             android:name=".views.adapters.TransactionAdapter"
             android:exported="false" />
         <activity
-            android:name=".views.POSActivity"
+            android:name=".views.POS.POSActivity"
             android:exported="false" />
         <activity
             android:name=".views.AddProductActivity"
@@ -52,6 +52,9 @@
             android:exported="false" />
         <activity
             android:name=".views.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.ProfileActivity"
             android:exported="false" />
         <activity
             android:name=".views.MainActivity"

@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.example.beesness.R;
 import com.example.beesness.views.MainActivity;
 import com.example.beesness.views.POS.POSActivity;
+import com.example.beesness.views.ProfileActivity;
 import com.example.beesness.views.StockActivity;
 import com.example.beesness.views.TransactionHistoryActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -55,7 +56,7 @@ public class SetupNavigationFacade {
                 return true;
 
             } else if (id == R.id.nav_profile) {
-                Toast.makeText(activity, "Opening Profile...", Toast.LENGTH_SHORT).show();
+                startActivity(ProfileActivity.class);
                 return true;
             }
 
