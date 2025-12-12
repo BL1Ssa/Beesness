@@ -17,6 +17,7 @@ import com.example.beesness.models.User;
 import com.example.beesness.utils.Result;
 import com.example.beesness.utils.SessionManager;
 import com.example.beesness.views.adapters.ProductAdapter;
+import com.example.beesness.views.facade.SetupNavigationFacade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.NumberFormat;
@@ -139,35 +140,9 @@ public class POSActivity extends AppCompatActivity {
         });
     }
 
-    private void setupNavigation() {
-        bottomNav.setSelectedItemId(R.id.nav_cart);
-
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.nav_home) {
-                Intent intent = new Intent(POSActivity.this, MainActivity.class);
-                startActivity(intent);
-                return true;
-
-            } else if (id == R.id.nav_transaction) {
-                 Intent intent = new Intent(POSActivity.this, TransactionHistoryActivity.class);
-                 startActivity(intent);
-                return true;
-
-            } else if (id == R.id.nav_cart) {
-                return true;
-
-            } else if (id == R.id.nav_stock) {
-                Intent intent = new Intent(POSActivity.this, StockActivity.class);
-                startActivity(intent);
-                return true;
-
-            } else if (id == R.id.nav_profile) {
-                Toast.makeText(this, "Opening Profile...", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            return false;
-        });
+    private void setupNavigation(){
+        //SetupNavigation logic is on Facade
+        SetupNavigationFacade navFacade = new SetupNavigationFacade(this,bottomNav);
+        navFacade.setupNavigation(R.id.nav_cart);
     }
 }
