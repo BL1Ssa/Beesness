@@ -66,4 +66,28 @@ public class TransactionRepository implements ITransactionRepository {
                     callback.onSuccess(null);
                 }).addOnFailureListener(callback::onFailure);
     }
+
+    @Override
+    public void getSalesHistory(String storeId, FirestoreCallback<List<Transaction>> callback) {
+        ref.whereEqualTo("storeId", storeId)
+                .whereEqualTo("type", "SALE")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Transaction> transactionList = queryDocumentSnapshots.toObjects(Transaction.class);
+                    callback.onSuccess(transactionList);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    @Override
+    public void getProcurementHistory(String storeId, FirestoreCallback<List<Transaction>> callback) {
+        ref.whereEqualTo("storeId", storeId)
+                .whereEqualTo("type", "PROCUREMENT")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Transaction> transactionList = queryDocumentSnapshots.toObjects(Transaction.class);
+                    callback.onSuccess(transactionList);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
 }

@@ -25,7 +25,7 @@ public class CartSheetFragment extends BottomSheetDialogFragment {
 
     public interface CartUpdateListener {
         void onCartUpdated();
-        void onStockRestored(String productId, int quantityRestored);
+        Boolean onStockRestored(String productId, int quantityRestored);
     }
 
     public CartSheetFragment(List<Product> cartList, CartUpdateListener listener) {
@@ -74,16 +74,12 @@ public class CartSheetFragment extends BottomSheetDialogFragment {
 
             // PLUS BUTTON
             holder.btnPlus.setOnClickListener(v -> {
-                // When increasing cart, we need to decrease stock in main list
-                // For now, we assume user checks stock limit in main view or we check here
-                // Simple logic:
+                if(!listener.onStockRestored(p.getId(), -1)) return;
                 p.setQuantity(p.getQuantity() + 1);
                 notifyItemChanged(position);
 
-                // RESTOCK -1 means "Remove 1 more from shelf" (Optional, if you want full sync)
-                // For now, let's just focus on restoration:
                 listener.onCartUpdated();
-                listener.onStockRestored(p.getId(), -1); // Negative means take from shelf
+
             });
 
             // MINUS BUTTON

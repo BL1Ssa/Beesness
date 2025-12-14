@@ -48,6 +48,9 @@
             android:name=".views.SignupActivity"
             android:exported="false" />
         <activity
+            android:name=".views.ProcurementActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.CreateStoreActivity"
             android:exported="false" />
         <activity

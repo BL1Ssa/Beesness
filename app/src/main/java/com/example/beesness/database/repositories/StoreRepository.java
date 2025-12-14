@@ -15,8 +15,6 @@ public class StoreRepository implements IStoreRepository {
     private final FirebaseFirestore db;
     private final CollectionReference storeRef;
 
-    // Removed staffRef since the store is now just the owner
-
     private StoreRepository() {
         db = FirebaseFirestore.getInstance();
         storeRef = db.collection("stores");

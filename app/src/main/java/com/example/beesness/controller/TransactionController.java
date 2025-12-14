@@ -23,10 +23,8 @@ public class TransactionController {
         this.transactionRepo = TransactionRepository.getInstance();
     }
 
-    // Existing Sales Logic
     public void processCheckout(List<Product> cartItems, String storeId, double totalInfo, OperationCallback<String> callback) {
-        // ... (Keep your existing sales logic here) ...
-        // Re-paste your existing processCheckout code here to ensure it's not lost
+
         callback.onResult(Result.loading());
         StringBuilder summaryBuilder = new StringBuilder();
         for (Product p : cartItems) {
@@ -111,6 +109,7 @@ public class TransactionController {
     }
 
     public void getHistory(String storeId, OperationCallback<List<Transaction>> callback) {
+        callback.onResult(Result.loading());
         transactionRepo.getAll(storeId, new FirestoreCallback<List<Transaction>>() {
             @Override
             public void onSuccess(List<Transaction> result) {
@@ -127,4 +126,43 @@ public class TransactionController {
             }
         });
     }
+
+    public void getSalesHistory(String storeId, OperationCallback<List<Transaction>> callback){
+        callback.onResult(Result.loading());
+        transactionRepo.getSalesHistory(storeId, new FirestoreCallback<List<Transaction>>() {
+            @Override
+            public void onSuccess(List<Transaction> result) {
+                if (result.isEmpty()) {
+                    callback.onResult(Result.success(result, "No Transactions Found"));
+                } else {
+                    callback.onResult(Result.success(result));
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onResult(Result.error(e.getMessage()));
+            }
+        });
+    }
+
+    public void getProcurementHistory(String storeId, OperationCallback<List<Transaction>> callback){
+        callback.onResult(Result.loading());
+        transactionRepo.getProcurementHistory(storeId, new FirestoreCallback<List<Transaction>>() {
+            @Override
+            public void onSuccess(List<Transaction> result) {
+                if (result.isEmpty()) {
+                    callback.onResult(Result.success(result, "No Transactions Found"));
+                } else {
+                    callback.onResult(Result.success(result));
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onResult(Result.error(e.getMessage()));
+            }
+        });
+    }
+
 }

@@ -27,39 +27,27 @@ public class AuthRepository {
                 .addOnSuccessListener(authResult -> {
                     String uid = authResult.getUser().getUid();
 
-                    // After Auth success, fetch the User Profile from Firestore
                     fetchUserProfile(uid, callback);
                 })
                 .addOnFailureListener(callback::onFailure);
     }
 
     public void register(String email, String password, String name, String phonenum, FirestoreCallback<User> callback) {
-        // 1. Create Account in Firebase Auth
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     FirebaseUser firebaseUser = authResult.getUser();
                     String uid = firebaseUser.getUid();
-
-                    // 2. Create User Object
-                    // (Role defaults to OWNER because they are registering the app)
                     User newUser = new User(uid, name, email, phonenum);
 
-                    // 3. Save Profile to Firestore
                     saveUserProfile(newUser, callback);
                 })
                 .addOnFailureListener(callback::onFailure);
     }
 
-    // =================================================================
-    // LOGOUT
-    // =================================================================
     public void logout() {
         auth.signOut();
     }
 
-    // =================================================================
-    // HELPERS
-    // =================================================================
     public void getCurrentUser(FirestoreCallback<User> callback) {
         FirebaseUser firebaseUser = auth.getCurrentUser();
         if (firebaseUser == null) {

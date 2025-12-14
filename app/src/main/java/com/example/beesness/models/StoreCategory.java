@@ -11,7 +11,6 @@ public class StoreCategory {
         this.name = name;
     }
 
-    // --- Getters & Setters ---
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

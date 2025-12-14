@@ -2,8 +2,6 @@ package com.example.beesness.views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -23,7 +21,7 @@ import com.example.beesness.models.Store;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.OperationCallback;
 import com.example.beesness.utils.Result;
-import com.example.beesness.utils.SessionManager; // <--- IMPORT THIS
+import com.example.beesness.utils.SessionManager;
 
 import java.util.List;
 
@@ -116,11 +114,8 @@ public class LoginActivity extends AppCompatActivity {
                     if (stores != null && !stores.isEmpty()) {
                         Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
 
-                        // 4. SAVE CURRENT STORE SESSION
-                        // Assuming auto-select the first store for now
                         sessionManager.saveCurrentStore(stores.get(0).getId());
 
-                        // 5. CLEAN NAVIGATION (No Extras needed!)
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         // Clear back stack so pressing 'Back' doesn't return to Login
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -131,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent = new Intent(LoginActivity.this, CreateStoreActivity.class);
                         startActivity(intent);
                     }
-                    finish(); // Finish LoginActivity
+                    finish();
 
                 } else if(result.status == Result.Status.ERROR){
                     loginBtn.setEnabled(true);

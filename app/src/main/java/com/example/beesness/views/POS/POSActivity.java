@@ -85,13 +85,11 @@ public class POSActivity extends AppCompatActivity implements CartSheetFragment.
         recyclerView.setAdapter(adapter);
     }
 
-    // 4. ADDED: Logic to open the fragment
     private void openCartEditor() {
         if (cartList.isEmpty()) {
             Toast.makeText(this, "Cart is empty", Toast.LENGTH_SHORT).show();
             return;
         }
-        // Pass the live cartList to the fragment
         CartSheetFragment fragment = new CartSheetFragment(cartList, this);
         fragment.show(getSupportFragmentManager(), "CartEdit");
     }
@@ -100,24 +98,26 @@ public class POSActivity extends AppCompatActivity implements CartSheetFragment.
     @Override
     public void onCartUpdated() {
         updateTotalUI();
-        // Optional: If you want to refresh the main product list stock numbers
-        // when items are removed from cart, you could call loadProducts(storeId) here.
     }
 
     @Override
-    public void onStockRestored(String productId, int quantityRestored) {
+    public Boolean onStockRestored(String productId, int quantityRestored) {
         if (adapter != null && adapter.productList != null) {
             for (Product p : adapter.productList) {
                 if (p.getId().equals(productId)) {
-
+                    if(p.getQuantity() - quantityRestored <= 1 && quantityRestored < 0){
+                        Toast.makeText(this, "Out of Stock", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
                     int newStock = p.getQuantity() + quantityRestored;
                     p.setQuantity(newStock);
 
                     adapter.notifyDataSetChanged();
-                    return;
+                    return true;
                 }
             }
         }
+        return true;
     }
 
     private void addToCart(Product originalProduct) {

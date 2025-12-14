@@ -14,29 +14,37 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.beesness.R;
 import com.example.beesness.controller.StoreController;
+import com.example.beesness.controller.TransactionController;
 import com.example.beesness.models.Store;
+import com.example.beesness.models.Transaction;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.OperationCallback;
 import com.example.beesness.utils.Result;
-import com.example.beesness.utils.SessionManager; // <--- IMPORT THIS
+import com.example.beesness.utils.SessionManager;
 import com.example.beesness.views.facade.SetupNavigationFacade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private Spinner spinnerStore;
-    private TextView tvTotalRevenue, tvTotalExpense;
+    private TextView tvTotalRevenue, tvTotalExpense, tvDateRevenue, tvDateExpense;
     private BottomNavigationView bottomNav;
     private ImageButton addStoreBtn;
 
+    TransactionController transactionController;
     private StoreController storeController;
     private SessionManager sessionManager;
     private User currentUser;
     private List<Store> userStores = new ArrayList<>();
     private String currentStoreId;
+    private double salesTotal, procurementTotal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         currentUser = sessionManager.getUserDetail();
 
         storeController = new StoreController();
+        transactionController = new TransactionController();
 
         initViews();
         loadUserStores();
@@ -63,16 +72,24 @@ public class MainActivity extends AppCompatActivity {
         spinnerStore = findViewById(R.id.spinnerStoreSelector);
         tvTotalRevenue = findViewById(R.id.tvTotalRevenue);
         tvTotalExpense = findViewById(R.id.tvTotalExpense);
+        tvDateRevenue = findViewById(R.id.tvDateRevenue);
+        tvDateExpense = findViewById(R.id.tvDateExpense);
         bottomNav = findViewById(R.id.bottom_navigation);
         addStoreBtn = findViewById(R.id.addStoreButton);
 
         initBtn();
+        initValues();
+    }
+
+    private void initValues() {
+        salesTotal = 0;
+        procurementTotal = 0;
     }
 
     private void initBtn() {
         addStoreBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CreateStoreActivity.class);
-            intent.putExtra("hasStore", true); // This logic is fine to keep if specific
+            intent.putExtra("hasStore", true);
             startActivity(intent);
         });
     }
@@ -82,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
             public void onResult(Result<List<Store>> result) {
                 switch (result.status) {
                     case LOADING:
-                        // Optional: Show a progress bar
                         break;
                     case SUCCESS:
                         userStores = result.data;
@@ -149,8 +165,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadDashboardData(Store store) {
-        tvTotalRevenue.setText(store.getCurrency() + " 0");
-        tvTotalExpense.setText(store.getCurrency() + " 0");
+        setDate();
+
+        transactionController.getHistory(store.getId(), new OperationCallback<List<Transaction>>() {
+            @Override
+            public void onResult(Result<List<Transaction>> result) {
+                switch (result.status) {
+                    case LOADING:
+                        break;
+                    case SUCCESS:
+                        initValues();
+                        for(Transaction t : result.data){
+                            if(t.getType().equals("SALE")){
+                                salesTotal += t.getTotalAmount();
+                            }
+                            else {
+                                procurementTotal += t.getTotalAmount();
+                            }
+                        }
+                        setRevenueExpenseText();
+                        break;
+                    case ERROR:
+                        Toast.makeText(MainActivity.this, "Not able to fetch transactions", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        });
+    }
+
+    private void setRevenueExpenseText() {
+        Locale localeID = new Locale("id", "ID");
+        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
+        tvTotalRevenue.setText(formatRupiah.format(salesTotal));
+        tvTotalRevenue.setTextColor(getResources().getColor(R.color.green_growth));
+        tvTotalExpense.setText(formatRupiah.format(procurementTotal));
+        tvTotalExpense.setTextColor(getResources().getColor(R.color.red_growth_line));
+    }
+
+    private void setDate() {
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy");
+        String formattedDate = simpleDateFormat.format(date);
+        tvDateRevenue.setText("per " + formattedDate);
+        tvDateExpense.setText("per " + formattedDate);
     }
 
     private void setupNavigation() {
