@@ -11,7 +11,7 @@ public interface ITransactionRepository{
     void getAll(String storeId, FirestoreCallback<List<Transaction>> callback);
 
     void getById(String id, FirestoreCallback<Transaction> callback);
-
-
     void delete(String id, FirestoreCallback<Void> callback);
+    void getSalesHistory(String storeId, FirestoreCallback<List<Transaction>> callback);
+    void getProcurementHistory(String storeId, FirestoreCallback<List<Transaction>> callback);
 }
