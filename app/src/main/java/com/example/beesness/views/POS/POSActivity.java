@@ -17,6 +17,7 @@ import com.example.beesness.models.Product;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.Result;
 import com.example.beesness.utils.SessionManager;
+import com.example.beesness.views.TransactionHistoryActivity;
 import com.example.beesness.views.adapters.ProductAdapter;
 import com.example.beesness.views.facade.SetupNavigationFacade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -170,13 +171,22 @@ public class POSActivity extends AppCompatActivity implements CartSheetFragment.
             return;
         }
 
+        btnCheckout.setEnabled(false);
+        btnCheckout.setText("Processing...");
+
         transactionController.processCheckout(cartList, storeId, currentTotal, result -> {
+            if (result.status == Result.Status.LOADING) return;
+
             if (result.status == Result.Status.SUCCESS) {
                 Toast.makeText(this, "Transaction Success!", Toast.LENGTH_LONG).show();
 
                 cartList.clear();
                 currentTotal = 0;
                 updateTotalUI();
+
+                // Redirect to Transaction History Page
+                Intent intent = new Intent(POSActivity.this, TransactionHistoryActivity.class);
+                startActivity(intent);
 
             } else if (result.status == Result.Status.ERROR) {
                 Toast.makeText(this, "Failed: " + result.message, Toast.LENGTH_SHORT).show();

@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.beesness.R;
 import com.example.beesness.controller.ProductController;
+import com.example.beesness.controller.TransactionController;
 import com.example.beesness.models.Product;
 import com.example.beesness.models.ProductCategory;
 import com.example.beesness.utils.Result;
@@ -35,6 +36,8 @@ public class AddProductActivity extends AppCompatActivity {
     private Spinner spinnerCategory;
     private ImageView ivProductImage;
     private Button btnSave, btnCancel;
+
+    private TransactionController transactionController;
 
     // private Button btnDelete;
 
@@ -61,6 +64,8 @@ public class AddProductActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
+
+        transactionController = new TransactionController();
 
         sessionManager = new SessionManager(this);
         storeId = sessionManager.getCurrentStoreId();
@@ -176,8 +181,20 @@ public class AddProductActivity extends AppCompatActivity {
                     result -> {
                         btnSave.setEnabled(true);
                         if (result.status == Result.Status.SUCCESS) {
-                            Toast.makeText(this, "Product Added!", Toast.LENGTH_SHORT).show();
-                            finish();
+                            int initialQty = Integer.parseInt(stock);
+                            double initialCost = Double.parseDouble(buyPrice) * initialQty;
+
+                            if (initialQty > 0) {
+                                transactionController.recordInitialExpense(storeId, name, initialQty, initialCost, txResult -> {
+                                    btnSave.setEnabled(true);
+                                    Toast.makeText(this, "Product & Initial Expense Added!", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                });
+                            } else {
+                                btnSave.setEnabled(true);
+                                Toast.makeText(this, "Product Added!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
                         } else if (result.status == Result.Status.ERROR){
                             Toast.makeText(this, "Error: " + result.message, Toast.LENGTH_SHORT).show();
                         }

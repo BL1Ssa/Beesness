@@ -56,6 +56,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.firebase:firebase-storage:22.0.1")
     implementation ("com.squareup.picasso:picasso:2.71828")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
 java {
     toolchain {

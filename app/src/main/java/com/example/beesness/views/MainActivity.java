@@ -31,6 +31,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import java.util.Calendar;
+import java.util.Collections;
+
 public class MainActivity extends AppCompatActivity {
 
     private Spinner spinnerStore;
@@ -45,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
     private List<Store> userStores = new ArrayList<>();
     private String currentStoreId;
     private double salesTotal, procurementTotal;
+
+    private TextView tvTotalProfit;
+
+    private BarChart barChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
         tvDateExpense = findViewById(R.id.tvDateExpense);
         bottomNav = findViewById(R.id.bottom_navigation);
         addStoreBtn = findViewById(R.id.addStoreButton);
+        tvTotalProfit = findViewById(R.id.tvTotalProfit);
+        barChart = findViewById(R.id.barChart);
 
         initBtn();
         initValues();
@@ -183,7 +198,21 @@ public class MainActivity extends AppCompatActivity {
                                 procurementTotal += t.getTotalAmount();
                             }
                         }
+
+                        double profit = salesTotal - procurementTotal;
+
+                        Locale localeID = new Locale("id", "ID");
+                        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
+                        tvTotalProfit.setText(formatRupiah.format(profit));
+                        // Dynamic Color
+                        if (profit >= 0) {
+                            tvTotalProfit.setTextColor(getResources().getColor(R.color.green_growth));
+                        } else {
+                            tvTotalProfit.setTextColor(getResources().getColor(R.color.red_growth_line));
+                        }
+
                         setRevenueExpenseText();
+                        setupWeeklyChart(result.data);
                         break;
                     case ERROR:
                         Toast.makeText(MainActivity.this, "Not able to fetch transactions", Toast.LENGTH_SHORT).show();
@@ -221,4 +250,67 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    private void setupWeeklyChart(List<Transaction> transactions) {
+        List<String> last7Days = new ArrayList<>();
+        List<Double> dailyRevenue = new ArrayList<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM", Locale.US);
+        Calendar calendar = Calendar.getInstance();
+
+        // 1. Prepare empty buckets for the last 7 days
+        for (int i = 0; i < 7; i++) {
+            dailyRevenue.add(0.0);
+            last7Days.add("");
+        }
+
+        // 2. Fill buckets backwards (Today -> 6 days ago)
+        for (int i = 6; i >= 0; i--) {
+            last7Days.set(i, sdf.format(calendar.getTime()));
+
+            double dayTotal = 0;
+            for (Transaction t : transactions) {
+                // Only count SALES, ignore "Procurement"
+                if ("SALE".equals(t.getType())) {
+                    if (isSameDay(t.getDate(), calendar.getTime())) {
+                        dayTotal += t.getTotalAmount();
+                    }
+                }
+            }
+            dailyRevenue.set(i, dayTotal);
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+        }
+
+        // 3. Create Chart Data
+        List<BarEntry> entries = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            entries.add(new BarEntry(i, dailyRevenue.get(i).floatValue()));
+        }
+
+        // 4. Style the Chart
+        BarDataSet dataSet = new BarDataSet(entries, "Revenue");
+        dataSet.setColor(getResources().getColor(R.color.honey_primary));
+        dataSet.setValueTextSize(10f);
+
+        BarData barData = new BarData(dataSet);
+        barChart.setData(barData);
+
+        // Clean up the look
+        barChart.getDescription().setEnabled(false);
+        barChart.getAxisRight().setEnabled(false);
+        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(last7Days));
+        barChart.getXAxis().setGranularity(1f);
+        barChart.setFitBars(true);
+        barChart.animateY(1000); // Animation!
+        barChart.invalidate();   // Refresh
+    }
+
+    // Small helper to compare dates
+    private boolean isSameDay(java.util.Date date1, java.util.Date date2) {
+        if(date1 == null || date2 == null) return false;
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd", Locale.US);
+        return fmt.format(date1).equals(fmt.format(date2));
+    }
+
 }
