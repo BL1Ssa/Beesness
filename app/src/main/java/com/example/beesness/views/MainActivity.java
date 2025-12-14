@@ -20,15 +20,12 @@ import com.example.beesness.models.Transaction;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.OperationCallback;
 import com.example.beesness.utils.Result;
-import com.example.beesness.utils.SessionManager; // <--- IMPORT THIS
+import com.example.beesness.utils.SessionManager;
 import com.example.beesness.views.facade.SetupNavigationFacade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -92,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     private void initBtn() {
         addStoreBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CreateStoreActivity.class);
-            intent.putExtra("hasStore", true); // This logic is fine to keep if specific
+            intent.putExtra("hasStore", true);
             startActivity(intent);
         });
     }

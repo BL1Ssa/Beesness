@@ -13,9 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.beesness.R;
 import com.example.beesness.controller.TransactionController;
-import com.example.beesness.database.repositories.TransactionRepository;
 import com.example.beesness.models.Transaction;
-import com.example.beesness.utils.FirestoreCallback;
 import com.example.beesness.utils.SessionManager;
 import com.example.beesness.views.adapters.TransactionAdapter;
 import com.example.beesness.views.facade.SetupNavigationFacade;
@@ -40,14 +38,12 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_history);
 
-        // 1. Init Session & Check Login
         sessionManager = new SessionManager(this);
         if (!sessionManager.isLoggedIn()) {
             finish();
             return;
         }
 
-        // 2. Get Active Store ID
         currentStoreId = sessionManager.getCurrentStoreId();
         if (currentStoreId == null || currentStoreId.isEmpty()) {
             Toast.makeText(this, "No Active Store Found", Toast.LENGTH_SHORT).show();

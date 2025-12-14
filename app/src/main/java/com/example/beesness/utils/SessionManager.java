@@ -31,7 +31,7 @@ public class SessionManager {
 
     public void createLoginSession(User user, boolean isRemembered) {
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
-        editor.putBoolean(KEY_REMEMBER_ME, isRemembered); // <--- SAVE IT
+        editor.putBoolean(KEY_REMEMBER_ME, isRemembered);
         editor.putString(KEY_USER_ID, user.getId());
         editor.putString(KEY_USER_NAME, user.getName());
         editor.putString(KEY_USER_EMAIL, user.getEmail());

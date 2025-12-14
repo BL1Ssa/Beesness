@@ -19,7 +19,6 @@ import com.example.beesness.models.Product;
 import com.example.beesness.utils.Result;
 import com.example.beesness.utils.SessionManager;
 import com.example.beesness.views.adapters.ProductAdapter;
-// Ensure you import the Fragment and Interface correctly based on where you put them
 import com.example.beesness.views.POS.CartSheetFragment;
 import com.example.beesness.views.facade.SetupNavigationFacade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -43,7 +42,6 @@ public class ProcurementActivity extends AppCompatActivity implements CartSheetF
     private SessionManager sessionManager;
     private String storeId;
 
-    // List to hold items we are buying (Incoming Stock)
     private List<Product> procurementList = new ArrayList<>();
     private double estimatedCost = 0;
 
@@ -68,7 +66,7 @@ public class ProcurementActivity extends AppCompatActivity implements CartSheetF
         tvTotal = findViewById(R.id.tvTotalAmount);
 
         btnConfirm = findViewById(R.id.btnCheckout);
-        btnConfirm.setText("Confirm Restock"); // Rename button
+        btnConfirm.setText("Confirm Restock");
 
         checkoutLayout = findViewById(R.id.checkoutLayout);
         checkoutLayout.setOnClickListener(v -> openCartEditor());
@@ -81,7 +79,7 @@ public class ProcurementActivity extends AppCompatActivity implements CartSheetF
 
         adapter = new ProductAdapter();
         adapter.setProcurementMode(true);
-        // Custom Click Listener: Show Dialog instead of auto-add
+
         adapter.setOnItemClickListener(this::showRestockDialog);
 
         recyclerView.setAdapter(adapter);
@@ -150,9 +148,18 @@ public class ProcurementActivity extends AppCompatActivity implements CartSheetF
     }
 
     @Override
-    public void onStockRestored(String productId, int quantityRestored) {
-        // Not strictly needed for Procurement since we aren't visually decrementing stock from the list
-        // but required by the interface.
+    public Boolean onStockRestored(String productId, int quantityRestored) {
+        if (adapter != null && adapter.productList != null) {
+            for (Product p : adapter.productList) {
+                if (p.getId().equals(productId)) {
+                    int newStock = p.getQuantity() + quantityRestored;
+                    p.setQuantity(newStock);
+
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }
+        return true;
     }
 
     private void updateUI() {

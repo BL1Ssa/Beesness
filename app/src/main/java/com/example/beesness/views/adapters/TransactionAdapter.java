@@ -21,7 +21,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     private List<Transaction> list = new ArrayList<>();
 
-    // 1. CLICK LISTENER INTERFACE
     public interface OnItemClickListener {
         void onItemClick(Transaction transaction);
     }
@@ -40,7 +39,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_transaction, parent, false);
-        return new ViewHolder(v, this); // Pass 'this' adapter
+        return new ViewHolder(v, this);
     }
 
     @Override

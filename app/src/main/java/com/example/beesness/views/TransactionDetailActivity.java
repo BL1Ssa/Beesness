@@ -20,17 +20,14 @@ public class TransactionDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_detail);
 
-        // 1. Get Data from Intent
         Transaction transaction = (Transaction) getIntent().getSerializableExtra("TRANSACTION_DATA");
 
-        // 2. Init Views
         TextView tvId = findViewById(R.id.tvDetailId);
         TextView tvDate = findViewById(R.id.tvDetailDate);
         TextView tvItems = findViewById(R.id.tvDetailItems);
         TextView tvTotal = findViewById(R.id.tvDetailTotal);
         Button btnClose = findViewById(R.id.btnClose);
 
-        // 3. Populate Data
         if (transaction != null) {
             tvId.setText(transaction.getId());
 
