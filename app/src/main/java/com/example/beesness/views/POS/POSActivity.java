@@ -184,11 +184,12 @@ public class POSActivity extends AppCompatActivity implements CartSheetFragment.
                 currentTotal = 0;
                 updateTotalUI();
 
-                // Redirect to Transaction History Page
-                Intent intent = new Intent(POSActivity.this, TransactionHistoryActivity.class);
-                startActivity(intent);
+                btnCheckout.setText("Checkout");
+                btnCheckout.setEnabled(true);
 
             } else if (result.status == Result.Status.ERROR) {
+                btnCheckout.setEnabled(true);
+                btnCheckout.setText("Checkout");
                 Toast.makeText(this, "Failed: " + result.message, Toast.LENGTH_SHORT).show();
             }
         });
