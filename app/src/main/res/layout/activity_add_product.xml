@@ -2,7 +2,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
     android:padding="20dp">
 
     <LinearLayout
@@ -18,15 +17,13 @@
             android:id="@+id/tvTitle"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="#333"
             android:layout_marginBottom="24dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tap icon to change"
-            android:textSize="12sp"
-            android:textColor="#757575"/>
+            android:textSize="12sp"/>
 
         <androidx.cardview.widget.CardView
             android:layout_width="120dp"
@@ -42,8 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@android:drawable/ic_menu_gallery"
-                android:scaleType="centerCrop"
-                android:background="#EEE"/>
+                android:scaleType="centerCrop"/>
 
         </androidx.cardview.widget.CardView>
         <TextView
@@ -55,7 +51,6 @@
             android:id="@+id/etProductName"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#FFF"
             android:paddingHorizontal="12dp"
             android:hint="e.g. Honey Jasmine Tea"
             android:layout_marginBottom="16dp"/>
@@ -69,7 +64,6 @@
             android:id="@+id/spinnerCategory"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#FFF"
             android:layout_marginBottom="16dp"/>
 
         <LinearLayout
@@ -93,7 +87,6 @@
                     android:id="@+id/etBuyPrice"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="#FFF"
                     android:paddingHorizontal="12dp"
                     android:inputType="numberDecimal"
                     android:hint="0.00"/>
@@ -114,7 +107,6 @@
                     android:id="@+id/etSellPrice"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="#FFF"
                     android:paddingHorizontal="12dp"
                     android:inputType="numberDecimal"
                     android:hint="0.00"/>
@@ -131,7 +123,6 @@
             android:id="@+id/etStock"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#FFF"
             android:paddingHorizontal="12dp"
             android:inputType="number"
             android:hint="0"
@@ -146,7 +137,6 @@
             android:id="@+id/etDescription"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="#FFF"
             android:padding="12dp"
             android:gravity="top"
             android:hint="Optional details..."
@@ -157,8 +147,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="Add Product"
-            android:backgroundTint="#FFC107"
-            android:textColor="#000"
+            android:backgroundTint="@color/honey_primary"
             android:textStyle="bold"
             android:layout_marginBottom="12dp"/>
 
