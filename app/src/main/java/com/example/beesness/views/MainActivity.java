@@ -38,12 +38,11 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import java.util.Calendar;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
     private Spinner spinnerStore;
-    private TextView tvTotalRevenue, tvTotalExpense, tvDateRevenue, tvDateExpense;
+    private TextView tvTotalRevenue, tvTotalExpense;
     private BottomNavigationView bottomNav;
     private ImageButton addStoreBtn;
 
@@ -58,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvTotalProfit;
 
     private BarChart barChart;
+
+    private TextView tvTransactionCount, tvAvgSale;
+
+    private TextView tvTodayRevenue, tvTodayExpense, tvTodayProfit;
+
+    private TextView tvTodayDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +90,16 @@ public class MainActivity extends AppCompatActivity {
         spinnerStore = findViewById(R.id.spinnerStoreSelector);
         tvTotalRevenue = findViewById(R.id.tvTotalRevenue);
         tvTotalExpense = findViewById(R.id.tvTotalExpense);
-        tvDateRevenue = findViewById(R.id.tvDateRevenue);
-        tvDateExpense = findViewById(R.id.tvDateExpense);
         bottomNav = findViewById(R.id.bottom_navigation);
         addStoreBtn = findViewById(R.id.addStoreButton);
         tvTotalProfit = findViewById(R.id.tvTotalProfit);
         barChart = findViewById(R.id.barChart);
+        tvTransactionCount = findViewById(R.id.tvTransactionCount);
+        tvAvgSale = findViewById(R.id.tvAvgSale);
+        tvTodayRevenue = findViewById(R.id.tvTodayRevenue);
+        tvTodayExpense = findViewById(R.id.tvTodayExpense);
+        tvTodayProfit = findViewById(R.id.tvTodayProfit);
+        tvTodayDate = findViewById(R.id.tvTodayDate);
 
         initBtn();
         initValues();
@@ -180,42 +189,73 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadDashboardData(Store store) {
-        setDate();
+        // todays date
+        Date today = new Date();
+        Locale localeID = new Locale("id", "ID");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, dd MMMM yyyy", localeID);
+        tvTodayDate.setText(dateFormat.format(today));
 
         transactionController.getHistory(store.getId(), new OperationCallback<List<Transaction>>() {
             @Override
             public void onResult(Result<List<Transaction>> result) {
                 switch (result.status) {
-                    case LOADING:
-                        break;
+                    case LOADING: break;
                     case SUCCESS:
                         initValues();
+
+                        double todayRev = 0;
+                        double todayExp = 0;
+                        int todaySaleCount = 0;
+
+                        Date today = new Date();
+
                         for(Transaction t : result.data){
                             if(t.getType().equals("SALE")){
                                 salesTotal += t.getTotalAmount();
-                            }
-                            else {
+                            } else {
                                 procurementTotal += t.getTotalAmount();
                             }
-                        }
 
-                        double profit = salesTotal - procurementTotal;
+                            if (isSameDay(t.getDate(), today)) {
+                                if(t.getType().equals("SALE")){
+                                    todayRev += t.getTotalAmount();
+                                    todaySaleCount++;
+                                } else {
+                                    todayExp += t.getTotalAmount();
+                                }
+                            }
+                        }
 
                         Locale localeID = new Locale("id", "ID");
-                        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
-                        tvTotalProfit.setText(formatRupiah.format(profit));
-                        // Dynamic Color
-                        if (profit >= 0) {
-                            tvTotalProfit.setTextColor(getResources().getColor(R.color.green_growth));
-                        } else {
-                            tvTotalProfit.setTextColor(getResources().getColor(R.color.red_growth_line));
-                        }
+                        NumberFormat fmt = NumberFormat.getCurrencyInstance(localeID);
 
-                        setRevenueExpenseText();
-                        setupWeeklyChart(result.data);
+                        tvTotalRevenue.setText(fmt.format(salesTotal));
+                        tvTotalExpense.setText(fmt.format(procurementTotal));
+
+                        double allTimeProfit = salesTotal - procurementTotal;
+                        tvTotalProfit.setText(fmt.format(allTimeProfit));
+                        tvTotalProfit.setTextColor(allTimeProfit >= 0 ?
+                                getResources().getColor(R.color.green_growth) :
+                                getResources().getColor(R.color.red_growth_line));
+
+
+                        double avgSaleValue = (todaySaleCount > 0) ? (todayRev / todaySaleCount) : 0;
+                        tvTransactionCount.setText(String.valueOf(todaySaleCount));
+                        tvAvgSale.setText(fmt.format(avgSaleValue));
+
+                        tvTodayRevenue.setText(fmt.format(todayRev));
+                        tvTodayExpense.setText(fmt.format(todayExp));
+
+                        double todayProfit = todayRev - todayExp;
+                        tvTodayProfit.setText(fmt.format(todayProfit));
+                        tvTodayProfit.setTextColor(todayProfit >= 0 ?
+                                getResources().getColor(R.color.green_growth) :
+                                getResources().getColor(R.color.red_growth_line));
+
+                        setupComparisonChart(result.data);
                         break;
                     case ERROR:
-                        Toast.makeText(MainActivity.this, "Not able to fetch transactions", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Error fetching data", Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -231,14 +271,6 @@ public class MainActivity extends AppCompatActivity {
         tvTotalExpense.setTextColor(getResources().getColor(R.color.red_growth_line));
     }
 
-    private void setDate() {
-        Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy");
-        String formattedDate = simpleDateFormat.format(date);
-        tvDateRevenue.setText("per " + formattedDate);
-        tvDateExpense.setText("per " + formattedDate);
-    }
-
     private void setupNavigation() {
         SetupNavigationFacade navFacade = new SetupNavigationFacade(this, bottomNav);
         navFacade.setupNavigation(R.id.nav_home);
@@ -251,65 +283,97 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void setupWeeklyChart(List<Transaction> transactions) {
+    private void setupComparisonChart(List<Transaction> transactions) {
         List<String> last7Days = new ArrayList<>();
         List<Double> dailyRevenue = new ArrayList<>();
+        List<Double> dailyExpense = new ArrayList<>();
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM", Locale.US);
         Calendar calendar = Calendar.getInstance();
 
-
+        // make list to 0
         for (int i = 0; i < 7; i++) {
             dailyRevenue.add(0.0);
+            dailyExpense.add(0.0);
             last7Days.add("");
         }
 
-
+        // fill data (Today -> 6 days ago)
         for (int i = 6; i >= 0; i--) {
             last7Days.set(i, sdf.format(calendar.getTime()));
 
-            double dayTotal = 0;
+            double revTotal = 0;
+            double expTotal = 0;
+
             for (Transaction t : transactions) {
-                // Only count SALES, ignore "Procurement"
-                if ("SALE".equals(t.getType())) {
-                    if (isSameDay(t.getDate(), calendar.getTime())) {
-                        dayTotal += t.getTotalAmount();
+                if (isSameDay(t.getDate(), calendar.getTime())) {
+                    if ("SALE".equals(t.getType())) {
+                        revTotal += t.getTotalAmount();
+                    } else {
+                        expTotal += t.getTotalAmount();
                     }
                 }
             }
-            dailyRevenue.set(i, dayTotal);
+            dailyRevenue.set(i, revTotal);
+            dailyExpense.set(i, expTotal);
             calendar.add(Calendar.DAY_OF_YEAR, -1);
         }
 
+        //add to bar entry object
+        List<BarEntry> revenueEntries = new ArrayList<>();
+        List<BarEntry> expenseEntries = new ArrayList<>();
 
-        List<BarEntry> entries = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
-            entries.add(new BarEntry(i, dailyRevenue.get(i).floatValue()));
+            revenueEntries.add(new BarEntry(i, dailyRevenue.get(i).floatValue()));
+            expenseEntries.add(new BarEntry(i, dailyExpense.get(i).floatValue()));
         }
 
+        // datasets
+        BarDataSet set1 = new BarDataSet(revenueEntries, "Income");
+        set1.setColor(getResources().getColor(R.color.green_growth)); // Green
+        set1.setValueTextColor(getResources().getColor(R.color.gray_thin_text));
+        set1.setValueTextSize(10f);
 
-        BarDataSet dataSet = new BarDataSet(entries, "Revenue");
-        dataSet.setColor(getResources().getColor(R.color.honey_primary));
-        dataSet.setValueTextSize(10f);
+        BarDataSet set2 = new BarDataSet(expenseEntries, "Expense");
+        set2.setColor(getResources().getColor(R.color.red_growth_line)); // Red
+        set2.setValueTextColor(getResources().getColor(R.color.gray_thin_text));
+        set2.setValueTextSize(10f);
 
-        BarData barData = new BarData(dataSet);
-        barChart.setData(barData);
+        // combine data
+        BarData data = new BarData(set1, set2);
+        barChart.setData(data);
 
-        barChart.getXAxis().setTextColor(getResources().getColor(R.color.gray_thin_text));
-        barChart.getLegend().setTextColor(getResources().getColor(R.color.gray_thin_text));
-        barChart.getBarData().setValueTextColor(getResources().getColor(R.color.gray_thin_text));
-        barChart.getAxisLeft().setTextColor(getResources().getColor(R.color.gray_thin_text));
-        barChart.getDescription().setEnabled(false);
-        barChart.getAxisRight().setEnabled(false);
+        // grouping
+        float groupSpace = 0.4f; // Space between  days
+        float barSpace = 0.05f; // Space between green and red bar
+        float barWidth = 0.25f; // bar thickness
+
+        data.setBarWidth(barWidth);
+
+        // styliing
+        int grayColor = getResources().getColor(R.color.gray_thin_text);
+
+        barChart.getXAxis().setTextColor(grayColor);
+        barChart.getAxisLeft().setTextColor(grayColor);
+        barChart.getLegend().setTextColor(grayColor);
+
+        barChart.getXAxis().setCenterAxisLabels(true);
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(last7Days));
         barChart.getXAxis().setGranularity(1f);
-        barChart.setFitBars(true);
-        barChart.animateY(1000); // Animation!
-        barChart.invalidate();   // Refresh
+        barChart.getXAxis().setAxisMinimum(0f);
+        barChart.getXAxis().setAxisMaximum(7f);
+
+        barChart.getDescription().setEnabled(false);
+        barChart.getAxisRight().setEnabled(false);
+
+        // apply
+        barChart.groupBars(0f, groupSpace, barSpace);
+        barChart.animateY(1000);
+        barChart.invalidate();
     }
 
-    // Small helper to compare dates
+
     private boolean isSameDay(java.util.Date date1, java.util.Date date2) {
         if(date1 == null || date2 == null) return false;
         SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd", Locale.US);
