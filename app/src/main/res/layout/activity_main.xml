@@ -95,7 +95,7 @@
                         android:layout_marginTop="8dp"
                         android:fontFamily="sans-serif"
                         android:textColor="@color/gray_text"
-                        android:text="The way to get started is to quit talking and begin doing."
+                        android:text="The way to get started is to\nquit talking and begin doing."
                         android:textSize="14sp" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
@@ -242,7 +242,7 @@
                 android:orientation="vertical"
                 android:padding="16dp">
                 <TextView
-                    android:text="Transactions"
+                    android:text="Sales"
                     android:textSize="12sp"
                     android:textColor="#757575"
                     android:layout_width="wrap_content"
