@@ -258,13 +258,13 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM", Locale.US);
         Calendar calendar = Calendar.getInstance();
 
-        // 1. Prepare empty buckets for the last 7 days
+
         for (int i = 0; i < 7; i++) {
             dailyRevenue.add(0.0);
             last7Days.add("");
         }
 
-        // 2. Fill buckets backwards (Today -> 6 days ago)
+
         for (int i = 6; i >= 0; i--) {
             last7Days.set(i, sdf.format(calendar.getTime()));
 
@@ -281,13 +281,13 @@ public class MainActivity extends AppCompatActivity {
             calendar.add(Calendar.DAY_OF_YEAR, -1);
         }
 
-        // 3. Create Chart Data
+
         List<BarEntry> entries = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             entries.add(new BarEntry(i, dailyRevenue.get(i).floatValue()));
         }
 
-        // 4. Style the Chart
+
         BarDataSet dataSet = new BarDataSet(entries, "Revenue");
         dataSet.setColor(getResources().getColor(R.color.honey_primary));
         dataSet.setValueTextSize(10f);
@@ -295,7 +295,10 @@ public class MainActivity extends AppCompatActivity {
         BarData barData = new BarData(dataSet);
         barChart.setData(barData);
 
-        // Clean up the look
+        barChart.getXAxis().setTextColor(getResources().getColor(R.color.gray_thin_text));
+        barChart.getLegend().setTextColor(getResources().getColor(R.color.gray_thin_text));
+        barChart.getBarData().setValueTextColor(getResources().getColor(R.color.gray_thin_text));
+        barChart.getAxisLeft().setTextColor(getResources().getColor(R.color.gray_thin_text));
         barChart.getDescription().setEnabled(false);
         barChart.getAxisRight().setEnabled(false);
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);

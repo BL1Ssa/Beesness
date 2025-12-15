@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/headerTitle"
@@ -13,8 +12,6 @@
         android:text="My Dashboard"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
-        android:background="@color/white"
         android:elevation="4dp"
         android:layout_alignParentTop="true"/>
 
@@ -86,8 +83,8 @@
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:text="Good Morning.\nLet's get Started"
-                    android:textColor="@color/black"
                     android:textSize="24sp"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <TextView
@@ -96,8 +93,8 @@
                     android:layout_below="@id/tvGreeting"
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-light"
+                    android:textColor="@color/gray_text"
                     android:text="The way to get started is to quit talking and begin doing."
-                    android:textColor="#333333"
                     android:textSize="14sp" />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
@@ -135,7 +132,6 @@
                     android:text="Cashflows"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
                     android:layout_marginBottom="16dp"/>
 
                 <LinearLayout
@@ -166,8 +162,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/tvTotalRevenue"
                             android:text="Rp 0"
-                            android:textSize="18sp"
-                            android:textColor="@color/black"/>
+                            android:textSize="18sp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -194,8 +189,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/tvTotalExpense"
                             android:text="Rp 0"
-                            android:textSize="18sp"
-                            android:textColor="@color/black"/>
+                            android:textSize="18sp"/>
                     </LinearLayout>
 
 
@@ -227,8 +221,7 @@
                         android:layout_height="wrap_content"
                         android:text="Rp 0"
                         android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"/>
+                        android:textStyle="bold"/>
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -254,8 +247,7 @@
             app:cardCornerRadius="12dp"
             app:cardElevation="2dp"
             app:strokeColor="@color/honey_primary"
-            app:strokeWidth="1dp"
-            app:cardBackgroundColor="@color/white">
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -267,7 +259,6 @@
                     android:text="Revenue Trends (Last 7 Days)"
                     android:textStyle="bold"
                     android:textSize="16sp"
-                    android:textColor="@color/black"
                     android:layout_marginBottom="12dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
