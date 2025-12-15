@@ -14,10 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.beesness.R;
 import com.example.beesness.controller.TransactionController;
 import com.example.beesness.models.Transaction;
+import com.example.beesness.utils.Result;
 import com.example.beesness.utils.SessionManager;
 import com.example.beesness.views.adapters.TransactionAdapter;
 import com.example.beesness.views.facade.SetupNavigationFacade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import androidx.appcompat.app.AlertDialog; // For the confirmation popup
 
 import java.util.List;
 

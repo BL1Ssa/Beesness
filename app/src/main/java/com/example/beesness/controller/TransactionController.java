@@ -88,6 +88,9 @@ public class TransactionController {
 
     private void updateStockQty(String productId, int quantityChange, boolean isIncrease, Runnable onDone) {
         productController.getById(productId, result -> {
+
+            if (result.status == Result.Status.LOADING) return;
+
             if (result.status == Result.Status.SUCCESS && result.data != null) {
                 Product p = result.data;
 
@@ -161,6 +164,24 @@ public class TransactionController {
             @Override
             public void onFailure(Exception e) {
                 callback.onResult(Result.error(e.getMessage()));
+            }
+        });
+    }
+
+    public void recordInitialExpense(String storeId, String productName, int quantity, double totalCost, OperationCallback<String> callback) {
+        String summary = quantity + "x " + productName + " (Initial Stock)";
+        // Create a PROCUREMENT transaction
+        Transaction transaction = TransactionFactory.create(storeId, "PROCUREMENT", totalCost, summary);
+
+        transactionRepo.add(transaction, new FirestoreCallback<Transaction>() {
+            @Override
+            public void onSuccess(Transaction result) {
+                callback.onResult(Result.success(result.getId(), "Expense Recorded"));
+            }
+            @Override
+            public void onFailure(Exception e) {
+                // Even if this fails, the product was created, so we might just log it or warn the user
+                callback.onResult(Result.error("Failed to record expense: " + e.getMessage()));
             }
         });
     }

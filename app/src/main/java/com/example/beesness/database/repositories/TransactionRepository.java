@@ -3,11 +3,10 @@ package com.example.beesness.database.repositories;
 import com.example.beesness.database.interfaces.ITransactionRepository;
 import com.example.beesness.models.Transaction;
 import com.example.beesness.utils.FirestoreCallback;
-import com.google.firebase.Firebase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.List;
 

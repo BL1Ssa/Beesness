@@ -17,6 +17,7 @@ import com.example.beesness.models.Product;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.Result;
 import com.example.beesness.utils.SessionManager;
+import com.example.beesness.views.TransactionHistoryActivity;
 import com.example.beesness.views.adapters.ProductAdapter;
 import com.example.beesness.views.facade.SetupNavigationFacade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -170,7 +171,12 @@ public class POSActivity extends AppCompatActivity implements CartSheetFragment.
             return;
         }
 
+        btnCheckout.setEnabled(false);
+        btnCheckout.setText("Processing...");
+
         transactionController.processCheckout(cartList, storeId, currentTotal, result -> {
+            if (result.status == Result.Status.LOADING) return;
+
             if (result.status == Result.Status.SUCCESS) {
                 Toast.makeText(this, "Transaction Success!", Toast.LENGTH_LONG).show();
 
@@ -178,7 +184,12 @@ public class POSActivity extends AppCompatActivity implements CartSheetFragment.
                 currentTotal = 0;
                 updateTotalUI();
 
+                btnCheckout.setText("Checkout");
+                btnCheckout.setEnabled(true);
+
             } else if (result.status == Result.Status.ERROR) {
+                btnCheckout.setEnabled(true);
+                btnCheckout.setText("Checkout");
                 Toast.makeText(this, "Failed: " + result.message, Toast.LENGTH_SHORT).show();
             }
         });

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bggray"
     tools:context=".views.ProfileActivity">
 
     <!--Navigation Header -->
@@ -16,8 +15,6 @@
         android:text="My Profile"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
-        android:background="@color/white"
         android:elevation="4dp"
         android:layout_alignParentTop="true"/>
 
@@ -29,8 +26,7 @@
         android:id="@+id/cardProfile"
         android:layout_margin="16dp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@color/white">
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,13 +49,11 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:textColor="@color/black"
                 android:layout_marginBottom="8dp"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/gray_underline"
                 android:layout_marginVertical="10dp"/>
 
             <LinearLayout
@@ -80,8 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Loading..."
-                    android:textSize="16sp"
-                    android:textColor="@color/gray_text"/>
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -101,8 +94,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Loading..."
-                    android:textSize="16sp"
-                    android:textColor="@color/gray_text"/>
+                    android:textSize="16sp"/>
             </LinearLayout>
 
         </LinearLayout>

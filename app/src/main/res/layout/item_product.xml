@@ -35,8 +35,7 @@
                 android:layout_height="wrap_content"
                 android:text="Product Name"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/cardfg"/>
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tvProductCategory"
@@ -68,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:text="Qty: 0"
                 android:textSize="12sp"
-                android:textColor="#555"/>
+                android:textColor="@color/gray_thin_text"/>
         </LinearLayout>
 
     </LinearLayout>
