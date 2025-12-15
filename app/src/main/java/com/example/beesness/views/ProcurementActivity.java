@@ -163,6 +163,8 @@ public class ProcurementActivity extends AppCompatActivity implements CartSheetF
     }
 
     private void updateUI() {
+        btnConfirm.setText("Confirm Restock");
+        btnConfirm.setEnabled(true);
         estimatedCost = 0;
         int totalItems = 0;
         for (Product p : procurementList) {
@@ -176,7 +178,9 @@ public class ProcurementActivity extends AppCompatActivity implements CartSheetF
     }
 
     private void handleProcurement() {
-        if (procurementList.isEmpty()) return;
+        if (procurementList.isEmpty()){
+            Toast.makeText(this, "No Products Added Yet", Toast.LENGTH_SHORT).show();
+        };
 
         transactionController.processProcurement(procurementList, storeId, estimatedCost, result -> {
             if (result.status == Result.Status.SUCCESS) {
@@ -186,8 +190,12 @@ public class ProcurementActivity extends AppCompatActivity implements CartSheetF
                 loadProducts(); // Refresh to see updated stock numbers
             } else if (result.status == Result.Status.ERROR){
                 Toast.makeText(this, "Error: " + result.message, Toast.LENGTH_SHORT).show();
+            } else if (result.status == Result.Status.LOADING) {
+                btnConfirm.setText("Restocking...");
+                btnConfirm.setEnabled(false);
             }
         });
+
     }
 
     private void loadProducts() {
