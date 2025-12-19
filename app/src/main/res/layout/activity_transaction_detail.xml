@@ -5,15 +5,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="@color/white"
     android:gravity="center_horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="cancel"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="left"
+        android:textSize="16sp"
+        android:id="@+id/cancelButton"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@android:color/white">
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,7 +34,6 @@
                 android:text="Transaction Receipt"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp"/>
 
@@ -35,30 +41,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Transaction ID"
-                android:textSize="12sp"
-                android:textColor="@color/gray_thin_text"/>
+                android:textSize="12sp"/>
             <TextView
                 android:id="@+id/tvDetailId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="..."
                 android:textStyle="bold"
-                android:textColor="@color/black"
                 android:layout_marginBottom="16dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Date"
-                android:textSize="12sp"
-                android:textColor="@color/gray_thin_text"/>
+                android:textSize="12sp"/>
             <TextView
                 android:id="@+id/tvDetailDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="..."
                 android:textStyle="bold"
-                android:textColor="@color/black"
                 android:layout_marginBottom="16dp"/>
 
             <View
@@ -71,21 +73,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Items"
-                android:textSize="12sp"
-                android:textColor="@color/gray_thin_text"/>
+                android:textSize="12sp"/>
             <TextView
                 android:id="@+id/tvDetailItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="..."
                 android:textSize="16sp"
-                android:textColor="@color/black"
                 android:layout_marginBottom="24dp"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/gray_underline"
                 android:layout_marginBottom="16dp"/>
 
             <LinearLayout
@@ -119,7 +118,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Close"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="#757575"/>
+        android:layout_marginTop="24dp"/>
 
 </LinearLayout>

@@ -11,13 +11,25 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- 1. Header Section -->
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/beesnesslogo"
-            android:layout_marginBottom="16dp"
-            android:layout_gravity="center_horizontal"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="cancel"
+                android:layout_centerVertical="true"
+                android:id="@+id/cancelButton"/>
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/beesnesslogo"
+                android:layout_marginBottom="16dp"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -144,7 +156,7 @@
                     android:text="Cancel"
                     android:visibility="gone"
                     android:enabled="false"
-                    android:id="@+id/cancelButton"/>
+                    android:id="@+id/cancelBtn"/>
 
                 <!-- Loading Indicator (Hidden) -->
                 <ProgressBar

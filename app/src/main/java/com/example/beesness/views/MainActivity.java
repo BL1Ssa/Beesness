@@ -86,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
         setupNavigation();
     }
 
+    @Override
+    protected void onResume() {
+        setupNavigation();
+        super.onResume();
+    }
+
     private void initViews() {
         spinnerStore = findViewById(R.id.spinnerStoreSelector);
         tvTotalRevenue = findViewById(R.id.tvTotalRevenue);

@@ -1,6 +1,7 @@
 package com.example.beesness.views.POS;
 
-import android.content.Intent;
+import static android.view.View.VISIBLE;
+
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -17,7 +18,6 @@ import com.example.beesness.models.Product;
 import com.example.beesness.models.User;
 import com.example.beesness.utils.Result;
 import com.example.beesness.utils.SessionManager;
-import com.example.beesness.views.TransactionHistoryActivity;
 import com.example.beesness.views.adapters.ProductAdapter;
 import com.example.beesness.views.facade.SetupNavigationFacade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -32,7 +32,7 @@ public class POSActivity extends AppCompatActivity implements CartSheetFragment.
 
     private RecyclerView recyclerView;
     private ProductAdapter adapter;
-    private TextView tvTotal;
+    private TextView tvTotal, tvCancel;
     private Button btnCheckout;
     private LinearLayout checkoutLayout; // 2. ADDED: Reference to the clickable total area
 
@@ -67,7 +67,9 @@ public class POSActivity extends AppCompatActivity implements CartSheetFragment.
     private void initViews() {
         tvTotal = findViewById(R.id.tvTotalAmount);
         btnCheckout = findViewById(R.id.btnCheckout);
-
+        tvCancel = findViewById(R.id.cancelBtn);
+        tvCancel.setVisibility(VISIBLE);
+        tvCancel.setOnClickListener(v -> finish());
 
         checkoutLayout = findViewById(R.id.checkoutLayout);
         checkoutLayout.setOnClickListener(v -> openCartEditor());

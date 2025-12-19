@@ -29,7 +29,7 @@ import java.util.List;
 public class CreateStoreActivity extends AppCompatActivity {
 
     private EditText etName, etAddress, etPhone;
-    private TextView tvTitle, tvDesc;
+    private TextView tvTitle, tvDesc, tvCancel;
     private Spinner spinnerCategory;
     private Button btnCreate, btnCancel;
     private ProgressBar progressBar;
@@ -89,6 +89,8 @@ public class CreateStoreActivity extends AppCompatActivity {
     }
 
     private void initializeUserInputComponents() {
+        tvCancel = findViewById(R.id.cancelButton);
+        tvCancel.setOnClickListener(v -> finish());
         tvTitle = findViewById(R.id.tvTitleCreateStore);
         tvDesc = findViewById(R.id.tvDescCreateStore);
         etName = findViewById(R.id.etStoreName);
@@ -97,7 +99,7 @@ public class CreateStoreActivity extends AppCompatActivity {
         spinnerCategory = findViewById(R.id.spinnerCategory);
         btnCreate = findViewById(R.id.btnCreateStore);
         progressBar = findViewById(R.id.progressBar);
-        btnCancel = findViewById(R.id.cancelButton);
+        btnCancel = findViewById(R.id.cancelBtn);
     }
 
     private void initCancelBtn() {

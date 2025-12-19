@@ -31,7 +31,7 @@ import java.util.List;
 
 public class AddProductActivity extends AppCompatActivity {
 
-    private TextView tvStock;
+    private TextView tvStock, tvCancel;
     private EditText etName, etBuyPrice, etSellPrice, etStock, etDesc;
     private Spinner spinnerCategory;
     private ImageView ivProductImage;
@@ -90,6 +90,8 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        tvCancel = findViewById(R.id.cancelButton);
+        tvCancel.setOnClickListener(v -> finish());
         etName = findViewById(R.id.etProductName);
         etBuyPrice = findViewById(R.id.etBuyPrice);
         etSellPrice = findViewById(R.id.etSellPrice);

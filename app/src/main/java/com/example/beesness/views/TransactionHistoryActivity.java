@@ -61,6 +61,12 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         loadHistoryData();
     }
 
+    @Override
+    protected void onResume() {
+        setupNavigation();
+        super.onResume();
+    }
+
     private void initViews() {
         recyclerView = findViewById(R.id.rvHistory);
         progressBar = findViewById(R.id.progressBar);
