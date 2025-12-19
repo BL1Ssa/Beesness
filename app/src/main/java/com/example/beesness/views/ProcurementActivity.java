@@ -1,5 +1,7 @@
 package com.example.beesness.views;
 
+import static android.view.View.VISIBLE;
+
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.Button;
@@ -32,7 +34,7 @@ public class ProcurementActivity extends AppCompatActivity implements CartSheetF
 
     private RecyclerView recyclerView;
     private ProductAdapter adapter;
-    private TextView tvTotal;
+    private TextView tvTotal, tvCancel;
     private Button btnConfirm;
     private LinearLayout checkoutLayout;
     private BottomNavigationView bottomNav;
@@ -67,6 +69,10 @@ public class ProcurementActivity extends AppCompatActivity implements CartSheetF
 
         btnConfirm = findViewById(R.id.btnCheckout);
         btnConfirm.setText("Confirm Restock");
+
+        tvCancel = findViewById(R.id.cancelBtn);
+        tvCancel.setVisibility(VISIBLE);
+        tvCancel.setOnClickListener(v -> finish());
 
         checkoutLayout = findViewById(R.id.checkoutLayout);
         checkoutLayout.setOnClickListener(v -> openCartEditor());

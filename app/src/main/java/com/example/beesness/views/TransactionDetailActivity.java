@@ -15,10 +15,14 @@ import java.util.Locale;
 
 public class TransactionDetailActivity extends AppCompatActivity {
 
+    private TextView tvCancel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_detail);
+        tvCancel = findViewById(R.id.cancelButton);
+        tvCancel.setOnClickListener(v -> {finish();});
 
         Transaction transaction = (Transaction) getIntent().getSerializableExtra("TRANSACTION_DATA");
 

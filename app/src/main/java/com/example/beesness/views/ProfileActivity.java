@@ -47,10 +47,12 @@ public class ProfileActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "User not found, please login again", Toast.LENGTH_SHORT).show();
         }
+    }
 
-
-
-
+    @Override
+    protected void onResume() {
+        setupNavigation();
+        super.onResume();
     }
 
     private void initViews() {

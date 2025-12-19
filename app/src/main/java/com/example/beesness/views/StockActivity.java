@@ -78,10 +78,10 @@ public class StockActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh the list automatically when returning from "Add Product"
         if (currentStoreId != null) {
             loadProducts(currentStoreId);
         }
+        setupNavigation();
     }
 
     private void initViews() {
